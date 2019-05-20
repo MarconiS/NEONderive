@@ -1,0 +1,16 @@
+#prd = "10026"
+retrieve_TOS_data <- function(prd=NULL){
+  req <- GET(paste("http://data.neonscience.org/api/v0/products/DP1.",prd,".001", sep=""))
+  # make this JSON readable -> "text"
+  req.text <- content(req, as="text")
+  # Flatten data frame to see available data.
+  avail <- fromJSON(req.text, simplifyDataFrame=T, flatten=T)
+  sitesID <- unlist(avail$data$siteCodes$siteCode)
+
+  for(id in sitesID){
+    zipsByProduct(dpID=paste("DP1.", prd, ".001", sep=""), site=id, package="basic",
+    savepath="./tmp/", check.size=F)
+  }
+  stackByTable(filepath=paste("./tmp/filesToStack", prd, "/",sep=""), folder=T)
+
+}
