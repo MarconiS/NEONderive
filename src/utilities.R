@@ -54,8 +54,7 @@ convert_stei <- function(dat){
 
 get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   
-  pt <- paste(fld, "/DP1.30003.001/", 
-              year, "/FullSite/", unique(centroids$domainID), "/",
+  pt <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
               "/", year,"_", NeonSites, "_2/", "L1/DiscreteLidar/ClassifiedPointCloud/", sep="")
   f_path <- paste(fld, "/DP3.30006.001/", year, "/FullSite/", unique(domainID), "/",
                   "/", year,"_", NeonSites,"_2/", "L3/Spectrometer/Reflectance/", sep="") #H5
@@ -64,6 +63,15 @@ get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   dtm_pt = paste(fld, "/AOP/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/DiscreteLidar/DTMGtif/", sep="")
   
-  return(list(f_path, chm_f, dtm_pt))
+  return(list(pt = pt, f_path = f_path, chm_f = chm_f, dtm_pt= dtm_pt))
   
 }
+
+get_epsg_from_utm <- function(utm){
+  dictionary <- cbind(32616, 32615, 32617, 32616, 32616, 32616, 32612, 32613, 32617, 32617, 
+                      32614, 32618, 32616, 32619, 32617, 32615) 
+  colnames(dictionary) <- c("STEI", "CHEQ", "SCBI", "GRSM", "ORNL", "TALL", "MOAB", 
+                            "JORN", "OSBS", "MLBS", "KONZ", "HARV", "LENO", "GUAN", "DSNY", "UKFS")
+  return(dictionary[colnames(dictionary)==utm])
+}
+
