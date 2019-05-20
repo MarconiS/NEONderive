@@ -20,6 +20,8 @@ field_data_main <- function(){
     list.files("./src/", pattern="retrieve"), sep="/") 
   sapply(file.sources,source,.GlobalEnv)
 
+  dir.create(file.path("out", "TOS_outputs"))#, showWarnings = FALSE)
+  dir.create(file.path("tmp"))#, showWarnings = FALSE)
   
   retrieve_TOS_data(10026)
   retrieve_TOS_data(10053)
@@ -37,4 +39,4 @@ field_data_main <- function(){
   #system2("rm -fr ./tmp/*")
 }
 
-retrieve_field_data()
+field_data_main()
