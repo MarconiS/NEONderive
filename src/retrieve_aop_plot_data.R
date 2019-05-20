@@ -15,7 +15,8 @@ retrieve_aop_plot_data <- function(site){
   
   epsg <- get_epsg_from_utm(unique(centroids$siteID))
   
-  paths <- get_aop_data_paths(fld = "/ufrc/ewhite/s.marconi/MMBRS/indir/AOP/DP1.30003.001/")
+  paths <- get_aop_data_paths(fld = "/ufrc/ewhite/s.marconi/MMBRS/indir/AOP/DP1.30003.001/",
+                              NeonSites = site, years = years$scanDate, domainID= unique(data$domainID))
   #get canopy height from lidar
   aop_chm_plot()
   #get itcs from lidar

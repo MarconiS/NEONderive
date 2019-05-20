@@ -52,16 +52,16 @@ convert_stei <- function(dat){
   return(new_dat)
 }
 
-get_aop_data_paths <- function(fld){
+get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   
   pt <- paste(fld, "/DP1.30003.001/", 
               year, "/FullSite/", unique(centroids$domainID), "/",
               "/", year,"_", NeonSites, "_2/", "L1/DiscreteLidar/ClassifiedPointCloud/", sep="")
-  f_path <- paste(fld, "/DP3.30006.001/", year, "/FullSite/", unique(centroids$domainID), "/",
+  f_path <- paste(fld, "/DP3.30006.001/", year, "/FullSite/", unique(domainID), "/",
                   "/", year,"_", NeonSites,"_2/", "L3/Spectrometer/Reflectance/", sep="") #H5
-  chm_f <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(centroids$domainID), "/",
+  chm_f <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/CHM/", sep="")
-  dtm_pt = paste(fld, "/AOP/DP3.30024.001/", year, "/FullSite/", unique(centroids$domainID), "/",
+  dtm_pt = paste(fld, "/AOP/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/DiscreteLidar/DTMGtif/", sep="")
   
   return(list(f_path, chm_f, dtm_pt))
