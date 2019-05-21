@@ -3,8 +3,8 @@ aop_hps_data <- function(centroids, hps_f, f_path, chm_f, epsg, wd,NeonSites =NU
   library(doParallel)
   library(rhdf5)
   
-  source(paste(wd, "src/polygonize.R", sep=""))
-  source(paste(wd, "src/utilities.R", sep=""))
+  source(paste("src/polygonize.R", sep=""))
+  source(paste("src/utilities.R", sep=""))
   # file.sources = paste("./src/",
   #                      list.files("./src/", pattern="aop"), sep="/") 
   # sapply(file.sources,source,.GlobalEnv)
@@ -33,8 +33,8 @@ aop_hps_data <- function(centroids, hps_f, f_path, chm_f, epsg, wd,NeonSites =NU
     #results <- foreach(z = clean_hps, .combine = 'cbind', .verbose = T) %:%
     results <- foreach(mm = 1:cr_per_path[z], .verbose = T) %dopar% {
       #for(mm in 1:cr_per_path[z]){
-      source(paste(wd, "src/polygonize.R", sep=""))
-      source(paste(wd, "src/utilities.R", sep=""))
+      source("src/polygonize.R")
+      source("src/utilities.R")
       file.sources = paste("./src/",
                            list.files("./src/", pattern="aop"), sep="/") 
       sapply(file.sources,source,.GlobalEnv)
