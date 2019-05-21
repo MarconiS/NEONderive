@@ -38,7 +38,7 @@ rs_data_main <- function(site, get_tile_chm = F){
     
     hps_f = list.files(paths$f_path)
     aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 25,
-                       chm_f = paths$chm_f, epsg=epsg, wd =  ".", NeonSites=site, cores = 16)
+                       chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 16)
     
   }
   
