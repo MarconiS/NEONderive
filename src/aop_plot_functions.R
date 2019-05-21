@@ -23,15 +23,16 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
   registerDoParallel(cl)
   clusterCall(cl, function(x) .libPaths(x), .libPaths())
   
-  results <- foreach(i = 1:nrow(tileID)) %dopar% {
+  results <- foreach(ii = 1:nrow(tileID)) %dopar% {
   #for(ii in 1:nrow(tileID)){
     lid_tile <- list.files(paths$pt, pattern = paste(tileID[ii,], collapse = "_"))
-    las <- readLAS(paste(paths$pt, lid_tile, sep="/"))
-    hps <- stack(paste(paths$f_path, lid_tile, sep="/"))
+    las_tl <- readLAS(paste(paths$pt, lid_tile, sep="/"))
+    hps_f = list.files("//ufrc/ewhite/s.marconi/MMBRS/AOP_from_coords/outputs/itcTiff", pattern = paste(tileID[ii,], collapse = "_"))
+    hps <- raster::stack(paste(paths$f_path, hps_f, sep="/"))
     
     for(jj in 1:nrow(plots)){
       crds <- plots[jj, c("easting", "northing")]
-      las <- lasclipRectangle(las, xleft = crds$easting - bff, 
+      las <- lasclipRectangle(las_tl, xleft = crds$easting - bff, 
                               crds$northing - bff, 
                               crds$easting + bff, 
                               crds$northing + bff)
