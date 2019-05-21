@@ -46,7 +46,7 @@ aop_hps_data <- function(centroids, hps_f, f_path, chm_f, epsg, wd,NeonSites =NU
         chm_pt <- list.files(chm_f, pattern = paste(as.integer(itcextract$easting[mm]/1000)*1000, "_",
                                                     as.integer(itcextract$northing[mm]/1000)*1000, sep=""))
         chm <- (paste(chm_f, chm_pt, sep="/"))
-        itcExtract(x = itcextract[mm,], f= paste(f_path,clean_hps[z],sep = "/"), chm = chm, buffer = buffer,
+        aop_extract_data(x = itcextract[mm,], f= paste(f_path,clean_hps[z],sep = "/"), chm = chm, buffer = buffer,
                    epsg = epsg, token = token, wd = wd)#, pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
         print(paste(mm, z, clean_hps[z]))
       },error=function(e){})
