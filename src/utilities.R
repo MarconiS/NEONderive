@@ -75,3 +75,8 @@ get_epsg_from_utm <- function(utm){
   return(dictionary[colnames(dictionary)==utm])
 }
 
+buffer_bbox <- function(bbox, buffer){
+  bbox[c(1,2)] <- bbox[c(1,2)] - buffer
+  bbox[c(3,4)] <- bbox[c(3,4)] + buffer
+  return(bbox)
+}

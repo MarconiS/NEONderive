@@ -17,7 +17,7 @@ retrieve_aop_plot_data <- function(site, get_tile_chm = F){
   
   epsg <- get_epsg_from_utm(unique(years$siteID))
   
-  paths <- get_aop_data_paths(fld = "/ufrc/ewhite/s.marconi/MMBRS/indir/AOP/DP1.30003.001/",
+  paths <- get_aop_data_paths(fld = "/ufrc/ewhite/s.marconi/MMBRS/indir/AOP/",
                               NeonSites = site, year = years$scanDate, domainID= unique(data$domainID))
   if(get_tile_chm == T){
     crownITC(paths$pt, wd = "./AOP_from_coords/", 
