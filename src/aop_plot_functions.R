@@ -8,27 +8,31 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
   #' @param epsg 
   #' @param paths   
   
-  library(lidR)
-  library(sf)
+  
   dir.create(file.path("out", "AOP"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "CHM"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "ITCs"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "spectra"))#, showWarnings = FALSE)
   
-  library(foreach)
-  library(doParallel)
+  
   registerDoSEQ()
   cl <- makeCluster(cores)
   registerDoParallel(cl)
   clusterCall(cl, function(x) .libPaths(x), .libPaths())
   
   results <- foreach(ii = 1:nrow(tileID)) %dopar% {
-  #for(ii in 1:nrow(tileID)){
+    
+    library(lidR)
+    library(sf)
+    library(foreach)
+    library(doParallel)
+    library(tidyverse)
+    library(exactextractr)
+    
+    #for(ii in 1:nrow(tileID)){
     lid_tile <- list.files(paths$pt, pattern = paste(tileID[ii,], collapse = "_"))
     las_tl <- readLAS(paste(paths$pt, lid_tile, sep="/"))
-    hps_f = list.files("//ufrc/ewhite/s.marconi/MMBRS/AOP_from_coords/outputs/itcTiff", pattern = paste(tileID[ii,], collapse = "_"))
-    hps <- raster::stack(paste(paths$f_path, hps_f, sep="/"))
     
     for(jj in 1:nrow(plots)){
       crds <- plots[jj, c("easting", "northing")]
@@ -45,11 +49,11 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
       raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM",
                                               plots[jj,"plotID"], ".tif", sep=""), 
                           format="GTiff", overwrite=TRUE)
-      treetops <- data %>% filter(plotID == unlist(plots[jj,"plotID"])) %>%
+      treetops <- data %>% dplyr::filter(plotID == unlist(plots[jj,"plotID"])) %>%
         dplyr::select("individualID", "UTM_E", "UTM_N", "height", "stemDiameter") %>% #, 
         #       "maxCrownDiameter", "ninetyCrownDiameter") %>%
         unique %>%
-        group_by(UTM_E, UTM_N) %>%
+        dplyr::group_by(UTM_E, UTM_N) %>%
         summarise_all(list(~if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>%
         st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
       
@@ -74,7 +78,12 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
       st_write(itcs, paste("./out/AOP/plot/ITCs/", plots[jj,"plotID"], ".shp"))
       
       #extract data from hiperspectral
-      spectra <- extract(hps, itcs, df=TRUE) 
+      hps_f = list.files("./out/AOP/plot/itcTiff", pattern = unlist(plots[jj,"plotID"]))
+      hps <- raster::stack(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"))
+      crs(hps) <- crs(chm_itc)
+      
+      #exact_extract(ras, poly)
+      spectra <- exact_extract(hps, itcs, df=TRUE) 
       write_csv(spectra, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv"))
       
     }
