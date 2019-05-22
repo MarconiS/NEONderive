@@ -13,7 +13,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
   dir.create(file.path("out", "AOP", "plot"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "CHM"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "ITCs"))#, showWarnings = FALSE)
-  dir.create(file.path("out", "AOP", "spectra"))#, showWarnings = FALSE)
+  dir.create(file.path("out", "AOP", "plot", "spectra"))#, showWarnings = FALSE)
   
   library(foreach)
   library(doParallel)
@@ -23,7 +23,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
   registerDoParallel(cl)
   clusterCall(cl, function(x) .libPaths(x), .libPaths())
   
-  results <- foreach(ii = 7:nrow(tileID)) %dopar% {
+  results <- foreach(ii = 1:nrow(tileID)) %dopar% {
     
     library(lidR)
     library(sf)
@@ -43,17 +43,17 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       tryCatch({
         las <- lasnormalize(las, tin())
         }, error=function(cond) {
-        })
+      })
       #laspl = lasnormalize(las, tin())
       tryCatch({
         
       thr <- c(0,2,5,10,15)
       edg <- c(0, 1.5)
-      chm <- grid_canopy(las, 0.25, pitfree(thr, edg, subcircle = 0.17))
+      chm <- grid_canopy(las, 1, pitfree(thr, edg, subcircle = 0.17))
       chm <- stretch(chm, minq=0.05, maxq=0.95)
       
-      raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM",
-                                              plots[jj,"plotID"], ".tif", sep=""), 
+      raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM/",
+                          plots[jj,"plotID"], ".tif", sep=""), 
                           format="GTiff", overwrite=TRUE)
       treetops <- data %>% dplyr::filter(plotID == unlist(plots[jj,"plotID"])) %>%
         dplyr::select("individualID", "UTM_E", "UTM_N", "height", "stemDiameter") %>% #, 
@@ -74,7 +74,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       algo = dalponte2016(chm_itc, treetops = as(treetops, "Spatial"))
       las  = lastrees(las, algo)
       metric = tree_metrics(las, .stdtreemetrics)
-      hulls  = tree_hulls(las)
+      hulls  = tree_hulls(las, attribute = "treeID")
       hulls@data = dplyr::left_join(hulls@data, metric@data)
       
       #add itc names and save itcs
@@ -103,11 +103,11 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       hps <- data.frame(as.matrix(hps))
       itcs <- itcs %>% select(treeID, individualID)
       colnames(itcs)[1] <- "layer"
-      hp<- right_join(itcs, hps)
+      hps<- right_join(itcs, hps)
       # #itcs <- itcs %>% arrange(individualID)
       # itcs$ID
       # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
-      write_csv(hp, paste("./out/AOP/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
+      write_csv(hps, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
       #write_csv(sp_check, paste("./out/AOP/spectra/", plots[jj,"plotID"], "test.csv", sep = ""))
       }, error=function(cond) {
         warning(plots[jj,"plotID"])
