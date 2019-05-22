@@ -1,4 +1,4 @@
-rs_data_main <- function(site, get_tile_chm = F){
+rs_data_main <- function(site = NULL, get_tile_chm = T){
   library(tidyverse)
   data <- readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") %>%
     filter(siteID %in% site)
@@ -31,11 +31,11 @@ rs_data_main <- function(site, get_tile_chm = F){
     centroids$taxonID <- "NA"
     centroids$individualID <- centroids$plotID
     
-    crownITC(paths$pt, wd = "./out/AOP/tiles/", 
-             pttrn = paste(tileID[,1], "_", tileID[,2], sep=""),
-             epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt,
-             pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
-    
+    # crownITC(paths$pt, wd = "./out/AOP/tiles/", 
+    #          pttrn = paste(tileID[,1], "_", tileID[,2], sep=""),
+    #          epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt,
+    #          pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
+    # 
     hps_f = list.files(paths$f_path)
     aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 25,
                        chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 16)

@@ -1,4 +1,4 @@
-aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
+aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
   #' use lidR to clip the lidar data, create a very high resolution chm, and return predicted itcs
   #' given we know the tree tops from NEON TOS
   #' @include lidR
@@ -15,18 +15,18 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
   dir.create(file.path("out", "AOP", "plot", "ITCs"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "spectra"))#, showWarnings = FALSE)
   
+  library(foreach)
+  library(doParallel)
   
   registerDoSEQ()
   cl <- makeCluster(cores)
   registerDoParallel(cl)
   clusterCall(cl, function(x) .libPaths(x), .libPaths())
   
-  results <- foreach(ii = 1:nrow(tileID)) %dopar% {
+  results <- foreach(ii = 7:nrow(tileID)) %dopar% {
     
     library(lidR)
     library(sf)
-    library(foreach)
-    library(doParallel)
     library(tidyverse)
     library(exactextractr)
     
@@ -40,10 +40,16 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
                               crds$northing - bff, 
                               crds$easting + bff, 
                               crds$northing + bff)
-      laspl = lasnormalize(las, tin())
+      tryCatch({
+        las <- lasnormalize(las, tin())
+        }, error=function(cond) {
+        })
+      #laspl = lasnormalize(las, tin())
+      tryCatch({
+        
       thr <- c(0,2,5,10,15)
       edg <- c(0, 1.5)
-      chm <- grid_canopy(laspl, 0.25, pitfree(thr, edg))
+      chm <- grid_canopy(las, 0.25, pitfree(thr, edg, subcircle = 0.17))
       chm <- stretch(chm, minq=0.05, maxq=0.95)
       
       raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM",
@@ -75,17 +81,38 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cl = 16){
       proj4string(hulls) <- crs(treetops)
       itcs <- st_join(st_as_sf(hulls), treetops) %>%
         filter(!is.na(individualID))
-      st_write(itcs, paste("./out/AOP/plot/ITCs/", plots[jj,"plotID"], ".shp"))
+      st_write(itcs, paste("./out/AOP/plot/ITCs/", plots[jj,"plotID"], ".shp"), delete_layer=TRUE)
       
       #extract data from hiperspectral
       hps_f = list.files("./out/AOP/plot/itcTiff", pattern = unlist(plots[jj,"plotID"]))
-      hps <- raster::stack(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"))
-      crs(hps) <- crs(chm_itc)
+      hps <- raster::brick(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"))
+      # vras <- velox(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"), 
+      #               extent = extent(hps), res=c(1,1), crs= crs(chm_itc))
+      # #vras$crs= crs(chm_itc)
+      #rasterize polygons
+      library(fasterize)
+      r <- raster(itcs, res = 1)
+      r <- fasterize(itcs, r, field = "treeID")
+      spdf_2 <- as(r,'SpatialPolygonsDataFrame')
+      crs(hps) <- crs(r)
+      hps <- crop(hps, r, snap='near')
+      extent(hps) <- alignExtent(hps, r)
+      extent(r) <- alignExtent(hps, r)
       
-      #exact_extract(ras, poly)
-      spectra <- exact_extract(hps, itcs, df=TRUE) 
-      write_csv(spectra, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv"))
-      
+      hps <- addLayer(r, hps)
+      hps <- data.frame(as.matrix(hps))
+      itcs <- itcs %>% select(treeID, individualID)
+      colnames(itcs)[1] <- "layer"
+      hp<- right_join(itcs, hps)
+      # #itcs <- itcs %>% arrange(individualID)
+      # itcs$ID
+      # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
+      write_csv(hp, paste("./out/AOP/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
+      #write_csv(sp_check, paste("./out/AOP/spectra/", plots[jj,"plotID"], "test.csv", sep = ""))
+      }, error=function(cond) {
+        warning(plots[jj,"plotID"])
+      })
     }
   }
+  stopCluster(cl)
 }
