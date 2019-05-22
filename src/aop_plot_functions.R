@@ -101,7 +101,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       
       hps <- addLayer(r, hps)
       hps <- data.frame(as.matrix(hps))
-      itcs <- itcs %>% select(treeID, individualID)
+      itcs <- itcs %>% dplyr::select(treeID, individualID)
       colnames(itcs)[1] <- "layer"
       hps<- right_join(itcs, hps)
       # #itcs <- itcs %>% arrange(individualID)
