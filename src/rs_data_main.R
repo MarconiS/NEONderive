@@ -30,12 +30,12 @@ rs_data_main <- function(site = NULL, get_tile_chm = T){
     centroids <- plots
     centroids$taxonID <- "NA"
     centroids$individualID <- centroids$plotID
-    
-    # crownITC(paths$pt, wd = "./out/AOP/tiles/", 
-    #          pttrn = paste(tileID[,1], "_", tileID[,2], sep=""),
-    #          epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt,
-    #          pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
-    # 
+    #
+    aop_canopy_height(pt = paths$pt, wd = "./",
+             pttrn = paste(tileID[,1], "_", tileID[,2], sep=""),
+             epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt,
+             pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
+
     hps_f = list.files(paths$f_path)
     aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 25,
                        chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 16)
@@ -44,8 +44,5 @@ rs_data_main <- function(site = NULL, get_tile_chm = T){
   
   #get canopy height from lidar
   aop_chm_plot(plots, tileID, epsg, paths)
-  #get itcs from lidar
-  aop_itcs_plot()
-  #get hiperspectral
-  aop_hiperspectral()
+
 }
