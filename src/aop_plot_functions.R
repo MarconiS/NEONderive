@@ -1,7 +1,6 @@
 aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
   #' use lidR to clip the lidar data, create a very high resolution chm, and return predicted itcs
   #' given we know the tree tops from NEON TOS
-  #' @include lidR
   #' @param plots data.frame.
   #' 
   #' @param tileID data.frame.

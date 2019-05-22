@@ -54,6 +54,9 @@ convert_stei <- function(dat){
 
 get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   
+  if(NeonSites %in% c("SERC", "GRSM")){
+    year = 2017
+  }
   pt <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
               "/", year,"_", NeonSites, "_2/", "L1/DiscreteLidar/ClassifiedPointCloud/", sep="")
   f_path <- paste(fld, "/DP3.30006.001/", year, "/FullSite/", unique(domainID), "/",
