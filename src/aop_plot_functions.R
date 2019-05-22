@@ -49,7 +49,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
         
       thr <- c(0,2,5,10,15)
       edg <- c(0, 1.5)
-      chm <- grid_canopy(las, 1, pitfree(thr, edg, subcircle = 0.17))
+      chm <- grid_canopy(las, 0.25, pitfree(thr, edg, subcircle = 0.17))
       chm <- stretch(chm, minq=0.05, maxq=0.95)
       
       raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM/",
