@@ -1,6 +1,6 @@
 ## Define the function
 gdal_polygonizeR <- function(x, outshape=NULL, gdalformat = 'ESRI Shapefile',
-                             pypath=NULL,raspath = "/ufrc/ewhite/s.marconi/TraitsOnHeaven/AOP_from_coords/tmp/",  readpoly=TRUE, quiet=TRUE) {
+                             pypath=NULL,raspath = "./tmp/chm_ras/",  readpoly=TRUE, quiet=TRUE) {
   if (isTRUE(readpoly)) require(rgdal)
   if (is.null(pypath)) {
     pypath <- Sys.which('gdal_polygonize.py')

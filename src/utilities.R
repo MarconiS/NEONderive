@@ -60,7 +60,7 @@ get_aop_data_paths <- function(fld, year, domainID, NeonSites){
                   "/", year,"_", NeonSites,"_2/", "L3/Spectrometer/Reflectance/", sep="") #H5
   chm_f <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/CHM/", sep="")
-  dtm_pt = paste(fld, "/AOP/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
+  dtm_pt = paste(fld, "/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/DiscreteLidar/DTMGtif/", sep="")
   
   return(list(pt = pt, f_path = f_path, chm_f = chm_f, dtm_pt= dtm_pt))
