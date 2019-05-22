@@ -64,6 +64,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
         st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
       
       #use plot extent plus 3m buffer
+      source("./src/utilities.R")
       settbuff=buffer_bbox(st_bbox(treetops),3)
       attr(settbuff, "class") = "bbox"
       attr(st_geometry(treetops), "bbox") = settbuff
