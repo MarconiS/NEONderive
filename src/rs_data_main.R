@@ -1,12 +1,12 @@
 rs_data_main <- function(site = NULL, get_tile_chm = T){
   library(tidyverse)
   data <- readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") %>%
-    filter(siteID %in% site)
+    dplyr::filter(siteID %in% site)
   years <- readr::read_csv("./out/TOS_outputs/field_date_collection.csv") %>%
-    filter(siteID %in% site)
+    dplyr::filter(siteID %in% site)
   plots <- readr::read_csv("tmp/filesToStack10098/stackedFiles/vst_perplotperyear.csv") %>%
-    filter(siteID %in% site) %>%
-    select(plotID, easting, northing, siteID, utmZone) %>%
+    dplyr::filter(siteID %in% site) %>%
+    dplyr::select(plotID, easting, northing, siteID, utmZone) %>%
     unique
   
   

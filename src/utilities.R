@@ -54,7 +54,7 @@ convert_stei <- function(dat){
 
 get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   
-  if(NeonSites %in% c("SERC", "GRSM")){
+  if(NeonSites %in% c("SERC", "GRSM", "SCBI", "CHEQ", "STEI", "TALL", "MLBS")){
     year = 2017
   }
   pt <- paste(fld, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
