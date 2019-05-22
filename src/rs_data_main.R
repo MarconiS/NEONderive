@@ -43,6 +43,6 @@ rs_data_main <- function(site = NULL, get_tile_chm = T){
   }
   
   #get canopy height from lidar
-  aop_chm_plot(plots, tileID, epsg, paths, site, bff = 25, cores = 4)
+  aop_chm_plot(plots, tileID, epsg, paths, bff = 25, cores = 4)
 
 }
