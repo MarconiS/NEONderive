@@ -28,6 +28,10 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
     library(sf)
     library(tidyverse)
     library(exactextractr)
+    source("./src/utilities.R")
+    file.sources = paste("./src/",
+                         list.files("./src/", pattern="aop"), sep="/") 
+    sapply(file.sources,source,.GlobalEnv)
     
     #for(ii in 1:nrow(tileID)){
     lid_tile <- list.files(paths$pt, pattern = paste(tileID[ii,], collapse = "_"))
@@ -44,7 +48,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
         }, error=function(cond) {
       })
       #laspl = lasnormalize(las, tin())
-      tryCatch({
+      #tryCatch({
         
       thr <- c(0,2,5,10,15)
       edg <- c(0, 1.5)
@@ -59,8 +63,8 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
         #       "maxCrownDiameter", "ninetyCrownDiameter") %>%
         unique %>%
         dplyr::group_by(UTM_E, UTM_N) %>%
-        summarise_all(list(~if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>%
-        st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
+        summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>%
+      st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
       
       #use plot extent plus 3m buffer
       source("./src/utilities.R")
@@ -109,9 +113,9 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
       write_csv(hps, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
       #write_csv(sp_check, paste("./out/AOP/spectra/", plots[jj,"plotID"], "test.csv", sep = ""))
-      }, error=function(cond) {
-        warning(plots[jj,"plotID"])
-      })
+      # }, error=function(cond) {
+      #   warning(plots[jj,"plotID"])
+      # })
     }
   }
   stopCluster(cl)
