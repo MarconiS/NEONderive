@@ -48,7 +48,7 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
         }, error=function(cond) {
       })
       #laspl = lasnormalize(las, tin())
-      #tryCatch({
+      tryCatch({
         
       thr <- c(0,2,5,10,15)
       edg <- c(0, 1.5)
@@ -113,9 +113,10 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
       write_csv(hps, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
       #write_csv(sp_check, paste("./out/AOP/spectra/", plots[jj,"plotID"], "test.csv", sep = ""))
-      # }, error=function(cond) {
-      #   warning(plots[jj,"plotID"])
-      # })
+      }, error=function(cond) {
+        print(plots[jj,"plotID"])
+        print(cond)
+      })
     }
   }
   stopCluster(cl)
