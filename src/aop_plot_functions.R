@@ -17,13 +17,14 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
   library(foreach)
   library(doParallel)
   
-  registerDoSEQ()
-  cl <- makeCluster(cores)
-  registerDoParallel(cl)
-  clusterCall(cl, function(x) .libPaths(x), .libPaths())
-  
-  results <- foreach(ii = 1:nrow(tileID)) %dopar% {
-    
+  # registerDoSEQ()
+  # cl <- makeCluster(cores)
+  # registerDoParallel(cl)
+  # clusterCall(cl, function(x) .libPaths(x), .libPaths())
+  # 
+  #results <- foreach(ii = 1:nrow(tileID)) %dopar% {
+  for(ii in 1:nrow(tileID)){
+      
     library(lidR)
     library(sf)
     library(tidyverse)
@@ -119,5 +120,5 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       })
     }
   }
-  stopCluster(cl)
+#stopCluster(cl)
 }

@@ -1,4 +1,4 @@
-rs_data_main <- function(site = NULL, get_tile_chm = T){
+rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
   library(tidyverse)
   data <- readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") %>%
     dplyr::filter(siteID %in% site)
@@ -26,6 +26,11 @@ rs_data_main <- function(site = NULL, get_tile_chm = T){
   if(get_tile_chm == T){
     dir.create(file.path("out", "AOP", "tiles"))#, showWarnings = FALSE)
     dir.create(file.path("out", "AOP", "plot", "itcTiff"))#, showWarnings = FALSE)
+    
+    #get AOP data, if needed
+    if(getAOP){
+      aop_retrieve(fin = plots)
+    }
     
     centroids <- plots
     centroids$taxonID <- "NA"
