@@ -1,4 +1,4 @@
-aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
+aop_chm_plot <- function(plots, data, tileID, epsg, paths, bff = 25, cores = 4){
   #' use lidR to clip the lidar data, create a very high resolution chm, and return predicted itcs
   #' given we know the tree tops from NEON TOS
   #' @param plots data.frame.
@@ -59,60 +59,8 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
       raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM/",
                           plots[jj,"plotID"], ".tif", sep=""), 
                           format="GTiff", overwrite=TRUE)
-      treetops <- data %>% dplyr::filter(plotID == unlist(plots[jj,"plotID"])) %>%
-        dplyr::select("individualID", "UTM_E", "UTM_N", "height", "stemDiameter") %>% #, 
-        #       "maxCrownDiameter", "ninetyCrownDiameter") %>%
-        unique %>%
-        dplyr::group_by(UTM_E, UTM_N) %>%
-        summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>%
-      st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
-      
-      #use plot extent plus 3m buffer
-      source("./src/utilities.R")
-      settbuff=buffer_bbox(st_bbox(treetops),3)
-      attr(settbuff, "class") = "bbox"
-      attr(st_geometry(treetops), "bbox") = settbuff
-      #crop the chm to the extent of field data collection 
-      chm_itc <- raster::crop(chm, extent(treetops))
-      #use tree data allometry to apply dalponte 2016
-      #itcs
-      algo = dalponte2016(chm_itc, treetops = as(treetops, "Spatial"))
-      las  = lastrees(las, algo)
-      metric = tree_metrics(las, .stdtreemetrics)
-      hulls  = tree_hulls(las, attribute = "treeID")
-      hulls@data = dplyr::left_join(hulls@data, metric@data)
-      
-      #add itc names and save itcs
-      proj4string(hulls) <- crs(treetops)
-      itcs <- st_join(st_as_sf(hulls), treetops) %>%
-        filter(!is.na(individualID))
-      st_write(itcs, paste("./out/AOP/plot/ITCs/", plots[jj,"plotID"], ".shp"), delete_layer=TRUE)
-      
-      #extract data from hiperspectral
-      hps_f = list.files("./out/AOP/plot/itcTiff", pattern = unlist(plots[jj,"plotID"]))
-      hps <- raster::brick(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"))
-      # vras <- velox(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"), 
-      #               extent = extent(hps), res=c(1,1), crs= crs(chm_itc))
-      # #vras$crs= crs(chm_itc)
-      #rasterize polygons
-      library(fasterize)
-      r <- raster(itcs, res = 1)
-      r <- fasterize(itcs, r, field = "treeID")
-      spdf_2 <- as(r,'SpatialPolygonsDataFrame')
-      crs(hps) <- crs(r)
-      hps <- crop(hps, r, snap='near')
-      extent(hps) <- alignExtent(hps, r)
-      extent(r) <- alignExtent(hps, r)
-      
-      hps <- addLayer(r, hps)
-      hps <- data.frame(as.matrix(hps))
-      itcs <- itcs %>% dplyr::select(treeID, individualID)
-      colnames(itcs)[1] <- "layer"
-      hps<- right_join(itcs, hps)
-      # #itcs <- itcs %>% arrange(individualID)
-      # itcs$ID
-      # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
-      write_csv(hps, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
+      writeLAS(las, paste("./out/AOP/plot/las/",
+                          plots[jj,"plotID"], ".tif", sep=""))
       #write_csv(sp_check, paste("./out/AOP/spectra/", plots[jj,"plotID"], "test.csv", sep = ""))
       }, error=function(cond) {
         print(plots[jj,"plotID"])
@@ -121,4 +69,75 @@ aop_chm_plot <- function(plots, tileID, epsg, paths, bff = 25, cores = 4){
     }
   }
 #stopCluster(cl)
+}
+
+get_itcs <- function(data, site){
+  library(lidR)
+  library(tidyverse)
+  library(raster)
+  library(rgdal)  # input/output, projections
+  library(sf)
+  chm_rgba = raster("~/Documents/Data/plot/false_col/MLBS_072_out.tif")
+  chm = raster("~/Documents/Data/plot/CHM/CHMMLBS_072.tif")
+  las = 
+    color = grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = T)]
+  
+  rescale <- function(x, max_val) (x-min(as.matrix(x), na.rm=T))/
+    (max(as.matrix(x), na.rm=T) - min(as.matrix(x), na.rm=T)) * max_val
+  chm_rgba = rescale(x = chm_rgba, max_val = 50)
+  
+  treetops <- data %>% dplyr::filter(plotID == unlist(plots[jj,"plotID"])) %>%
+    dplyr::select("individualID", "UTM_E", "UTM_N", "height", "stemDiameter") %>% #, 
+    #       "maxCrownDiameter", "ninetyCrownDiameter") %>%
+    unique %>%
+    dplyr::group_by(UTM_E, UTM_N) %>%
+    summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>%
+    st_as_sf(coords = c("UTM_E", "UTM_N"), crs = epsg)
+  
+  #use plot extent plus 3m buffer
+  source("./src/utilities.R")
+  settbuff=buffer_bbox(st_bbox(treetops),3)
+  attr(settbuff, "class") = "bbox"
+  attr(st_geometry(treetops), "bbox") = settbuff
+  #crop the chm to the extent of field data collection 
+  chm_itc <- raster::crop(chm, extent(treetops))
+  #use tree data allometry to apply dalponte 2016
+  #itcs
+  algo = dalponte2016(chm_itc, treetops = as(treetops, "Spatial"))
+  las  = lastrees(las, algo)
+  metric = tree_metrics(las, .stdtreemetrics)
+  hulls  = tree_hulls(las, attribute = "treeID")
+  hulls@data = dplyr::left_join(hulls@data, metric@data)
+  
+  #add itc names and save itcs
+  proj4string(hulls) <- crs(treetops)
+  itcs <- st_join(st_as_sf(hulls), treetops) %>%
+    filter(!is.na(individualID))
+  st_write(itcs, paste("./out/AOP/plot/ITCs/", plots[jj,"plotID"], ".shp"), delete_layer=TRUE)
+  
+  #extract data from hiperspectral
+  hps_f = list.files("./out/AOP/plot/itcTiff", pattern = unlist(plots[jj,"plotID"]))
+  hps <- raster::brick(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"))
+  # vras <- velox(paste("./out/AOP/plot/itcTiff", hps_f, sep="/"), 
+  #               extent = extent(hps), res=c(1,1), crs= crs(chm_itc))
+  # #vras$crs= crs(chm_itc)
+  #rasterize polygons
+  library(fasterize)
+  r <- raster(itcs, res = 1)
+  r <- fasterize(itcs, r, field = "treeID")
+  spdf_2 <- as(r,'SpatialPolygonsDataFrame')
+  crs(hps) <- crs(r)
+  hps <- crop(hps, r, snap='near')
+  extent(hps) <- alignExtent(hps, r)
+  extent(r) <- alignExtent(hps, r)
+  
+  hps <- addLayer(r, hps)
+  hps <- data.frame(as.matrix(hps))
+  itcs <- itcs %>% dplyr::select(treeID, individualID)
+  colnames(itcs)[1] <- "layer"
+  hps<- right_join(itcs, hps)
+  # #itcs <- itcs %>% arrange(individualID)
+  # itcs$ID
+  # spectra <- vras$extract(sp= itcs)# , df = T, small = T)
+  write_csv(hps, paste("./out/AOP/plot/spectra/", plots[jj,"plotID"], ".csv", sep = ""))
 }

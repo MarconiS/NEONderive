@@ -6,9 +6,10 @@ aop_retrieve <- function(fin){
   #fin <- readr::read_csv("./TOS_retriever/out/field_data_utm.csv")
   years <- read_csv("./out/TOS_outputs/field_date_collection.csv") %>%
     dplyr::filter(siteID == unique(fin$siteID))
+  tryCatch({
   years[years$siteID == "GRSM", "scanDate"] <- 2017
-  
   years[years$siteID == "SERC", "scanDate"] <- 2017
+  })
   #tiles <- coords_for_tiles[-1] %>% unique %>% filter((siteID %in% c("ORNL")))
   
   #coords_for_tiles <- fin %>% dplyr::select(individualID, siteID, utmZone, UTM_E, UTM_N) %>%

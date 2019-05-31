@@ -1,14 +1,15 @@
 rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
   library(tidyverse)
-  data <- readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") %>%
-    dplyr::filter(siteID %in% site)
+  #years = data.frame(scanDate = 2018, siteID = "OSBS", stringsAsFactors = F)
   years <- readr::read_csv("./out/TOS_outputs/field_date_collection.csv") %>%
+    dplyr::filter(siteID %in% site)
+  
+  data <- readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") %>%
     dplyr::filter(siteID %in% site)
   plots <- readr::read_csv("tmp/filesToStack10098/stackedFiles/vst_perplotperyear.csv") %>%
     dplyr::filter(siteID %in% site) %>%
     dplyr::select(plotID, easting, northing, siteID, utmZone) %>%
     unique
-  
   
   #set paths to get data from
   source("./src/utilities.R")
@@ -38,16 +39,16 @@ rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
     #
     aop_canopy_height(pt = paths$pt, wd = "./",
              pttrn = paste(tileID[,1], "_", tileID[,2], sep=""),
-             epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt,
+             epsg = epsg,  chm_f = paths$chm_f, dtm_pt = paths$dtm_pt, cores = 4,
              pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
 
     hps_f = list.files(paths$f_path)
     aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 25,
-                       chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 16)
+                       chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 5)
     
   }
   
   #get canopy height from lidar
-  aop_chm_plot(plots, tileID, epsg, paths, bff = 25, cores = 4)
+  aop_chm_plot(plots, data, tileID, epsg, paths, bff = 25, cores = 4)
 
 }

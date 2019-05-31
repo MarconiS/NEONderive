@@ -27,7 +27,9 @@ aop_canopy_height <- function(pt = NULL,wd = NULL, pttrn, cores = 4,segment = F,
       print(i)
       }else{
         print("tile exists")
-    	}},error=function(e){message(paste(i,"resulted in", f, ": error!"))})
+    	}},error=function(e){
+    	  message(paste(i,"resulted in", e, ": error!"))}
+      )
   }
   stopCluster(cl)
   return(results)
