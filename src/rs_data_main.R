@@ -43,12 +43,16 @@ rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
              pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
 
     hps_f = list.files(paths$f_path)
-    aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 25,
+    aop_hps_data(centroids = centroids, hps_f = hps_f, f_path =  paths$f_path, buffer = 20,
                        chm_f = paths$chm_f, epsg=epsg, wd =  "./", NeonSites=site, cores = 5)
     
   }
   
   #get canopy height from lidar
-  aop_chm_plot(plots, data, tileID, epsg, paths, bff = 25, cores = 4)
+  aop_chm_plot(plots, data, tileID, epsg, paths, bff = 20, cores = 4)
+  
+  #get fused data with 3 bands and chm
+  
+  #extract polygons from 
 
 }
