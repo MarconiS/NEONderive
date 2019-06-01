@@ -52,7 +52,12 @@ rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
   aop_chm_plot(plots, data, tileID, epsg, paths, bff = 20, cores = 4)
   
   #get fused data with 3 bands and chm
+  Sys.setenv(PATH = paste("/home/s.marconi/.conda/envs/quetzal3/bin", 
+                          Sys.getenv("PATH"),sep=":"))
+  system2("python3", args=(sprintf('"%1$s" "%2$s" "%3$s"',
+                                   "./src/get_modified_plots.py", "./out/AOP/plot/", site)))
   
   #extract polygons from 
-
+  get_itcs(data, site, plots, pt = "./out/AOP/plot/")
+    
 }
