@@ -152,6 +152,20 @@ for ii in range(len(list_chm)):
 
         out = Image.merge("RGBA", (red, green, blue,hue))
         out.save(path+"/false_col/4channels_"+list_chm[ii][-12:-4]+".tif")
+        im_4ch = cv2.imread(path+"/false_col/4channels_"+list_chm[ii][-12:-4]+".tif")
+        new_dataset = rasterio.open(
+            path+"/false_col/4channels_"+list_chm[ii][-12:-4]+".tif",
+            'w',
+            driver='GTiff',
+            height=u.shape[0],
+            width=u.shape[1],
+            count=1,
+            dtype=u.dtype,
+            crs=chm.crs,
+            transform=chm.transform,)
+        new_dataset.write(u, 1)
+        new_dataset.close()
+        
         im_gray = cv2.imread(path+"/false_col/4channels_"+list_chm[ii][-12:-4]+".tif", cv2.IMREAD_GRAYSCALE)
         u=apply_brightness_contrast(im_gray, 30, 30)
         new_dataset = rasterio.open(

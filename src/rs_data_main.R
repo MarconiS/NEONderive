@@ -61,3 +61,17 @@ rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
   get_itcs(data, site, plots, pt = "./out/AOP/plot/")
     
 }
+
+rs_data_main("STEI")
+rs_data_main("GRSM")
+rs_data_main("LENO")
+rs_data_main("UKFS")
+rs_data_main("SERC")
+rs_data_main("SCBI")
+rs_data_main("KONZ")
+rs_data_main("CHEQ")
+#rs_data_main("TALL")
+#rs_data_main("MLBS")
+rs_data_main("OSBS")
+rs_data_main("HARV")
+rs_data_main("DSNY")
