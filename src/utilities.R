@@ -112,3 +112,44 @@ get_itcs_in_tile <- function(hps_fi = NULL, centroids = NULL, f_path = NULL, Neo
   return(itcextract)
 }
 
+utm_to_geographic <- function(dat){
+  # from UTM zone and E N coords, get the geographic lat and longitude
+  latlon = NULL
+  library(sf)
+  for(ii in unique(dat$utmZone)){
+    epsg = paste("+init=epsg:326", gsub('.{1}$', '', ii), sep="")
+    foo = dat %>% filter(utmZone == ii)
+    foo = sf::st_as_sf(foo, coords = c("UTM_E", "UTM_N"), crs = epsg)
+    foo = st_transform(foo, "+init=epsg:4326")
+    
+    latlon = rbind.data.frame(latlon, cbind(foo$unique_id, st_coordinates(foo)),  stringsAsFactors = F)
+  }
+  colnames(latlon) <- c("unique_id", "longitude", "latitude")
+  new_pneon <- inner_join(dat, data.frame(latlon), by ="unique_id")
+  write_csv(new_pneon, "./out/preliminary_neon_points.csv")
+  return(latlon)
+  
+}
+
+get_epsg_from_utm <- function(utm){
+  utm <-  substr(utm,1,nchar(utm)-1)
+  epsg <- paste("326", utm, sep="")
+  return(epsg)
+}
+
+get_lat_long <- function(field_data){
+  library(rgdal)
+  new_dat <- NULL
+  for(NeonSites in unique(field_data$siteID)){
+    dat <- field_data[field_data$siteID %in% NeonSites,] 
+    epsg <- get_epsg_from_utm(unique(dat$utmZone))
+    dat <- dat[complete.cases(dat$UTM_E), ]
+    coordinates(dat) <- c("UTM_E", "UTM_N")
+    proj4string(dat) <- CRS(paste("+init=epsg:", epsg, sep ="")) 
+    CRS.new <- CRS("+init=epsg:4326")
+    dat <- spTransform(dat, CRS.new)
+    coords_dat <- dat@coords
+    new_dat <- rbind(new_dat, cbind(dat@data ,dat@coords))
+  }
+  return(new_dat)
+}

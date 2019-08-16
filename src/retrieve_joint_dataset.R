@@ -38,9 +38,10 @@ retrieve_joint_dataset <- function(){
   chemical[ft_nm] <- apply(chemical[ft_nm], 2,  function(x)remove_outliers(x))
   chemical <- chemical %>% group_by(.dots=c("individualID")) %>% 
     summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>% 
+    filter("subsample1Height" > 2) %>%
     select("individualID","domainID", "taxonID", "subsample1Height","scientificName", 
            "elevation", "siteID", "decimalLatitude","decimalLongitude", "leafMassPerArea", 
-           "dryMassFraction","ligninPercent", "cellulosePercent", "foliarPhosphorusConc",
+           "ligninPercent", "cellulosePercent", "foliarPhosphorusConc",
            "foliarPotassiumConc", "foliarCalciumConc", "extractChlAConc","extractChlBConc",
            "extractCarotConc",  "foliarMagnesiumConc","foliarSulfurConc",
            "foliarManganeseConc","foliarIronConc","foliarCopperConc",
@@ -53,9 +54,10 @@ retrieve_joint_dataset <- function(){
   chemical = chemical[complete.cases(chemical),] %>% unique
   readr::write_csv(chemical, './out/TOS_outputs/tree_traits_dataset.csv')
   
+  #chemical <- chemical %>% select(-one_of("siteID"))
   # just the geolocalized data
   full_data <- inner_join(chemical, structure, 
-      by = c("individualID","domainID", "taxonID", "scientificName","siteID")) %>% 
+      by = c("individualID","siteID","domainID", "taxonID", "scientificName")) %>% 
     unique %>%
     group_by(individualID) %>%
     summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.)))

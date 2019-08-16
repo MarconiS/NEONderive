@@ -14,6 +14,7 @@ field_data_main <- function(){
   library(downloader)
   library(httr)
   library(jsonlite)
+  
 
   #source files
   file.sources = paste("./src/",
@@ -25,7 +26,7 @@ field_data_main <- function(){
   
   retrieve_TOS_data(10026)
   retrieve_TOS_data(10053)
-  retrieve_TOS_data(10098)
+  #retrieve_TOS_data(10098)
 
   #harmonize the three data products to make a single database
   stack_chemical_leaf_products(10026)
@@ -36,6 +37,11 @@ field_data_main <- function(){
 
   #now connect with field data and position
   retrieve_joint_dataset()
+  results = readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") 
+  results <- sf::st_as_sf(results, coords = c("longitude", "latitude"), crs = 4326)
+  #sf::st_write(results, "./out/TOS_outputs/tree_traits_position.shp", delete_layer=TRUE)
+  sf::st_write(results, "./out/TOS_outputs/vegetation_structure.shp", delete_layer=TRUE)
+  
   #system2("rm -fr ./tmp/*")
 }
 

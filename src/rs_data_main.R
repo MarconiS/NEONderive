@@ -1,4 +1,4 @@
-rs_data_main <- function(site = NULL, get_tile_chm = T, getAOP = F){
+rs_data_main <- function(site = NULL, get_tile_chm = F, getAOP = F){
   library(tidyverse)
   #years = data.frame(scanDate = 2018, siteID = "OSBS", stringsAsFactors = F)
   years <- readr::read_csv("./out/TOS_outputs/field_date_collection.csv") %>%

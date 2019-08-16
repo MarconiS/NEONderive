@@ -25,20 +25,20 @@ aop_retrieve <- function(fin){
   for(ii in 1:nrow(tiles)){
     
     #elevation
-    byTileAOP("DP3.30024.001", site = tiles[ii,"siteID"], 
-              year = years[years$siteID %in% tiles[ii, "siteID"], "scanDate"], 
-              tiles[ii,"easting"], tiles[ii,"northing"], 
-              buffer = 0, check.size = F, savepath = "../MMBRS/indir/AOP/")
-    #reflectance
+    # byTileAOP("DP3.30024.001", site = tiles[ii,"siteID"], 
+    #           year = years[years$siteID %in% tiles[ii, "siteID"], "scanDate"], 
+    #           tiles[ii,"easting"], tiles[ii,"northing"], 
+    #           buffer = 0, check.size = F, savepath = "../MMBRS/indir/AOP/")
+    # #reflectance
     byTileAOP("DP3.30006.001", site = tiles[ii,"siteID"], 
               year = years[years$siteID %in% tiles[ii, "siteID"], "scanDate"], 
               tiles[ii,"easting"], tiles[ii,"northing"],
               buffer = 0, check.size = F, savepath = "./indir/AOP/")
     #aspect and slope
-    byTileAOP("DP3.30025.001", site = tiles[ii,"siteID"], 
-              year = years[years$siteID %in% tiles[ii, "siteID"], "scanDate"], 
-              tiles[ii,"easting"], tiles[ii,"northing"],
-              buffer = 0, check.size = F, savepath = "./indir/AOP/")
+    # byTileAOP("DP3.30025.001", site = tiles[ii,"siteID"], 
+    #           year = years[years$siteID %in% tiles[ii, "siteID"], "scanDate"], 
+    #           tiles[ii,"easting"], tiles[ii,"northing"],
+    #           buffer = 0, check.size = F, savepath = "./indir/AOP/")
   }
   
   #L1_2_dat <- years %>% filter((siteID %in% unique(tiles$siteID)))

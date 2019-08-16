@@ -28,7 +28,7 @@ aop_chm_plot <- function(plots, data, tileID, epsg, paths, bff = 20, cores = 4){
     library(lidR)
     library(sf)
     library(tidyverse)
-    library(exactextractr)
+    #library(exactextractr)
     source("./src/utilities.R")
     file.sources = paste("./src/",
                          list.files("./src/", pattern="aop"), sep="/") 
@@ -79,7 +79,7 @@ get_itcs <- function(data, site, plots, pt = "~/Documents/Data/plot/"){
   library(sf)
   library(lidR)
   library(tidyverse)
-  library(exactextractr)
+  #library(exactextractr)
   source("./src/utilities.R")
   ii = "MLBS_072"
   list_plots <- plots[,"plotID"] %>% unique %>% unlist

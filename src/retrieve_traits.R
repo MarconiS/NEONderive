@@ -6,13 +6,13 @@ stack_chemical_leaf_products <- function(prd=NULL){
   final_traits_data = read_csv(paste("./tmp/filesToStack", prd,"/stackedFiles/", product_name[1], sep="")) %>%
     select(-one_of("ovenStartDate", "ovenEndDate", "uid", "analyticalRepNumber", "accuracyQF", "measurementQF", "ligninSampleID",
                    "remarks", "sampleType","laboratoryName", "testMethod", "analyzedBy", "reviewedBy", "analysisDate", 
-                   "dataQF","plotID", "collectDate", "chlorophyllSampleID", "sampleCondition", "cnSampleID"))
+                   "dataQF","collectDate", "chlorophyllSampleID", "sampleCondition", "cnSampleID"))
   
   for(ff in product_name[-1]){
     product_data = read_csv(paste("./tmp/filesToStack", prd,"/stackedFiles/",ff, sep="")) %>%
       select(-one_of("ovenStartDate", "ovenEndDate", "uid", "analyticalRepNumber", "accuracyQF", "measurementQF","ligninSampleID",
                      "remarks", "laboratoryName", "testMethod", "analyzedBy",  "chlorophyllSampleID", "analysisDate", 
-                     "sampleCondition", "cnSampleID", "reviewedBy", "dataQF","plotID", "collectDate"))
+                     "sampleCondition", "plotID", "cnSampleID", "reviewedBy", "dataQF", "collectDate"))
     colnames(product_data)[which(colnames(product_data) %in% "dryMass")]<-
       paste(gsub('.{4}$', '', ff), "_dryWeight", sep="")
     colnames(product_data)[which(colnames(product_data) %in% "freshMass")]<-

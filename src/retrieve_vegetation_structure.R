@@ -7,14 +7,17 @@ retrieve_vegetation_structure <- function(){
                     "individualID","supportingStemIndividualID","previouslyTaggedAs",
                     "taxonID","scientificName"))
 
-  plots<-sf::st_read("./dat/TOS_inputs/All_Neon_TOS_Points_V5.shp")  %>% filter(str_detect(appMods,"vst"))
+  plots<-sf::st_read("./dat/TOS_inputs/All_Neon_TOS_Points_V5.shp")  #%>% filter(str_detect(appMods,"vst"))
   dat<-file_mapping %>% 
-    mutate(pointID=factor(pointID, levels = levels(plots$pointID))) %>% 
-    mutate(plotID=factor(plotID, levels = levels(plots$plotID))) %>% 
-    left_join(plots,by=c("plotID","pointID"))
+    mutate(pointID=factor(pointID, levels = levels(unique(plots$pointID))) )%>% 
+    mutate(plotID=factor(plotID, levels = levels(unique(plots$plotID)))) %>% 
+    inner_join(plots,by=c("plotID","pointID"))
   
   dat <- dat[!is.na(dat$stemAzimuth), ]
-  # get tree coordinates
+  # dat <- dat %>% filter(siteID %in% c("DSNY", "GRSM", "GUAN", "HARV",  "KONZ" ,
+  #                                     "LENO", "MLBS", "MOAB", "ORNL", "SCBI", 
+  #                                     "SERC",  "STEI", "TALL", "UKFS"))
+  # # get tree coordinates
   dat_apply <- dat %>%
     dplyr::select(c(stemDistance, stemAzimuth, easting, northing)) 
   coords <- apply(dat_apply,1,function(params)retrieve_dist_to_utm(params[1],params[2], params[3], params[4])) %>%
