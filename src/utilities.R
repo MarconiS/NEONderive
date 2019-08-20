@@ -144,12 +144,14 @@ get_lat_long <- function(field_data){
     dat <- field_data[field_data$siteID %in% NeonSites,] 
     epsg <- get_epsg_from_utm(unique(dat$utmZone))
     dat <- dat[complete.cases(dat$UTM_E), ]
+    utm_coords <- dat[c("UTM_E", "UTM_N")]
     coordinates(dat) <- c("UTM_E", "UTM_N")
     proj4string(dat) <- CRS(paste("+init=epsg:", epsg, sep ="")) 
     CRS.new <- CRS("+init=epsg:4326")
     dat <- spTransform(dat, CRS.new)
     coords_dat <- dat@coords
-    new_dat <- rbind(new_dat, cbind(dat@data ,dat@coords))
+    colnames(dat@coords) <- c("itc_lat", "itc_lon")
+    new_dat <- rbind(new_dat, cbind(dat@data, utm_coords, dat@coords))
   }
   return(new_dat)
 }
