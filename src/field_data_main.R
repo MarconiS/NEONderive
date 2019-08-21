@@ -37,11 +37,11 @@ field_data_main <- function(){
 
   #now connect with field data and position
   retrieve_joint_dataset()
-  results = readr::read_csv("./out/TOS_outputs/vegetation_structure_utm.csv") 
-  results = get_lat_long(results)
-  results <- sf::st_as_sf(results, coords = c("itc_lat", "itc_lon"), crs = 4326)
-  a <- results %>% select(taxonID)
-  sf::st_write(results, "./out/TOS_outputs/vegetation_structure.shp", delete_layer=TRUE)
+  stem_locations_shp = readr::read_csv('./out/TOS_outputs/field_data.csv') 
+  stem_locations_shp = get_lat_long(stem_locations_shp)
+  stem_locations_shp <- sf::st_as_sf(stem_locations_shp, coords = c("itc_lat", "itc_lon"), crs = 4326)
+  stem_locations_shp <- stem_locations_shp %>% filter(growthForm %in% c("small tree", "single bole tree", "multi-bole tree"))
+  sf::st_write(stem_locations_shp, "./out/TOS_outputs/vegetation_structure.shp", delete_layer=TRUE)
   
   #system2("rm -fr ./tmp/*")
 }

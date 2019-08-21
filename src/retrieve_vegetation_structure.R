@@ -2,12 +2,15 @@ retrieve_vegetation_structure <- function(){
   #'
   #'
   file_mapping = read_csv("./tmp/filesToStack10098/stackedFiles/vst_mappingandtagging.csv") %>%
-    dplyr::select(c("uid", "eventID", "domainID","siteID","plotID","subplotID",
+    dplyr::select(c("individualID", "eventID", "domainID","siteID","plotID","subplotID",
                     "nestedSubplotID","pointID","stemDistance","stemAzimuth",
-                    "individualID","supportingStemIndividualID","previouslyTaggedAs",
+                    "supportingStemIndividualID","previouslyTaggedAs",
                     "taxonID","scientificName"))
 
-  plots<-sf::st_read("./dat/TOS_inputs/All_Neon_TOS_Points_V5.shp")  #%>% filter(str_detect(appMods,"vst"))
+  plots<-sf::st_read("./dat/TOS_inputs/All_Neon_TOS_Points_V5.shp") %>% filter(str_detect(appMods,"vst"))
+  
+  
+  
   dat<-file_mapping %>% 
     mutate(pointID=factor(pointID, levels = levels(unique(plots$pointID))) )%>% 
     mutate(plotID=factor(plotID, levels = levels(unique(plots$plotID)))) %>% 
@@ -28,9 +31,10 @@ retrieve_vegetation_structure <- function(){
   
   max_no_na <- function(x)max(x, na.rm=T)
   apparent = readr::read_csv("./tmp/filesToStack10098/stackedFiles/vst_apparentindividual.csv") %>%
-    dplyr::select("individualID", "stemDiameter", "height", "maxCrownDiameter",  "ninetyCrownDiameter") %>%
+    dplyr::select("individualID", "stemDiameter", "height", "maxCrownDiameter",  
+                  "ninetyCrownDiameter", "growthForm", "plantStatus", "canopyPosition", "shape") %>%
     group_by(individualID) %>%
-    summarise_all(funs(max_no_na))
+    summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.)))
   
   apparent$stemDiameter[is.infinite(apparent$stemDiameter)] <- NA
   apparent$height[is.infinite(apparent$height)] <- NA
@@ -39,6 +43,14 @@ retrieve_vegetation_structure <- function(){
   
   crown_attributes = left_join(field_tag, apparent, by="individualID") %>%
     unique
-  summary(crown_attributes)
+  
+  #check for dopplegangers
+  which_multiple <- crown_attributes %>% group_by(individualID) %>% 
+    summarize(n=n()) %>% filter(n>1)  
+  
+  #find a more elegant solution for dopplegangers (at the time of Aug 2019 mainly just NEON.PLA.D05.STEI.01071A and NEON.PLA.D14.SRER.01112)
+  crown_attributes %>% group_by(individualID) %>% 
+  top_n(1, wt = individualID)
+  
   write_csv(crown_attributes, './out/TOS_outputs/field_data.csv')
 }
