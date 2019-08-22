@@ -1,6 +1,7 @@
 retrieve_vegetation_structure <- function(){
   #'
   #'
+  #'
   file_mapping = read_csv("./tmp/filesToStack10098/stackedFiles/vst_mappingandtagging.csv") %>%
     dplyr::select(c("individualID", "eventID", "domainID","siteID","plotID","subplotID",
                     "nestedSubplotID","pointID","stemDistance","stemAzimuth",
@@ -49,8 +50,9 @@ retrieve_vegetation_structure <- function(){
     summarize(n=n()) %>% filter(n>1)  
   
   #find a more elegant solution for dopplegangers (at the time of Aug 2019 mainly just NEON.PLA.D05.STEI.01071A and NEON.PLA.D14.SRER.01112)
-  crown_attributes %>% group_by(individualID) %>% 
-  top_n(1, wt = individualID)
+  # crown_attributes %>% group_by(individualID) %>% 
+  # top_n(1, wt = individualID)
   
+  crown_attributes <- get_crown_dimensions(crown_attributes)
   write_csv(crown_attributes, './out/TOS_outputs/field_data.csv')
 }

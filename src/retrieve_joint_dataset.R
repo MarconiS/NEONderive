@@ -38,7 +38,7 @@ retrieve_joint_dataset <- function(){
   chemical[ft_nm] <- apply(chemical[ft_nm], 2,  function(x)remove_outliers(x))
   chemical <- chemical %>% group_by(.dots=c("individualID")) %>% 
     summarise_all(funs(if(is.numeric(.)) mean(., na.rm = TRUE) else first(.))) %>% 
-    filter("subsample1Height" > 2) %>%
+    filter("subsample1Height" > 3) %>%
     select("individualID","domainID", "taxonID", "subsample1Height","scientificName", 
            "elevation", "siteID", "decimalLatitude","decimalLongitude", "leafMassPerArea", 
            "ligninPercent", "cellulosePercent", "foliarPhosphorusConc",
