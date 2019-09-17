@@ -220,6 +220,6 @@ for i in range(len(rgb)):
 sub_meta = refl_md
 ii = str(itc_id) + '.tif'
 ras_dir = wd+"/out/AOP/plot/itcTiff/"
-array2raster(ii, hcp, sub_meta, clipExtent, ras_dir, epsg)
+array2raster(ii, hcp, sub_meta, clipExtent, ras_dir, int(epsg))
 
 
