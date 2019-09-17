@@ -151,7 +151,7 @@ itc_xmin = float(sys.argv[3])
 itc_xmax = float(sys.argv[4])
 itc_ymin = float(sys.argv[5])
 itc_ymax = float(sys.argv[6])
-epsg = str(sys.argv[7])
+epsg = sys.argv[7]
 wd = sys.argv[8]
 
 print(itc_id, itc_xmin, itc_xmax, itc_ymin, itc_ymax, epsg)

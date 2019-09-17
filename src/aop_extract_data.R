@@ -13,9 +13,9 @@ aop_extract_data <- function(x, f, itc.f, epsg, token, wd,pybin = "/home/s.marco
   entryID <- paste(token, x$siteID, x$taxonID,  x$individualID, sep="_")
   #launch python "/Users/sergiomarconi/anaconda3/bin/"
   Sys.setenv(PATH = paste(pybin, Sys.getenv("PATH"),sep=":"))
-  system2("python3", args=(sprintf('"%1$s" "%2$s" "%4$s" "%5$f" "%6$f" "%7$f" "%8$f" "%9$s" "%10$s"',
+  system2("python3", args=(sprintf('"%1$s" "%2$s" "%3$s" "%4$f" "%5$f" "%6$f" "%7$f" "%8$d" "%9$s"',
                                    paste(wd, "src/extractCrown.py", sep=""), 
-                                   f, entryID, clip.xmin, clip.xmax, clip.ymin, clip.ymax, as.character(epsg), wd)))
+                                   f, entryID, clip.xmin, clip.xmax, clip.ymin, clip.ymax, as.numeric(epsg), wd)))
   #clip<- stack(paste(wd, "/itcTiff/", entryID, '.tif', sep=""))
 }
 
