@@ -5,8 +5,7 @@ retrieve_vegetation_structure <- function(){
   file_mapping = read_csv("./tmp/filesToStack10098/stackedFiles/vst_mappingandtagging.csv") %>%
     dplyr::select(c("individualID", "eventID", "domainID","siteID","plotID","subplotID",
                     "nestedSubplotID","pointID","stemDistance","stemAzimuth",
-                    "supportingStemIndividualID","previouslyTaggedAs",
-                    "taxonID","scientificName"))
+                    "supportingStemIndividualID",  "taxonID","scientificName"))
 
   plots<-sf::st_read("./dat/TOS_inputs/All_Neon_TOS_Points_V5.shp") %>% filter(str_detect(appMods,"vst"))
   
@@ -18,9 +17,9 @@ retrieve_vegetation_structure <- function(){
     inner_join(plots,by=c("plotID","pointID"))
   
   dat <- dat[!is.na(dat$stemAzimuth), ]
-  # dat <- dat %>% filter(siteID %in% c("DSNY", "GRSM", "GUAN", "HARV",  "KONZ" ,
-  #                                     "LENO", "MLBS", "MOAB", "ORNL", "SCBI", 
-  #                                     "SERC",  "STEI", "TALL", "UKFS"))
+  dat <- dat %>% filter(siteID %in% c("DSNY", "GRSM", "GUAN", "HARV",  "KONZ" ,
+                                       "LENO", "MLBS", "MOAB", "ORNL", "SCBI", 
+                                       "SERC",  "STEI", "TALL", "UKFS"))
   # # get tree coordinates
   dat_apply <- dat %>%
     dplyr::select(c(stemDistance, stemAzimuth, easting, northing)) 
@@ -31,7 +30,14 @@ retrieve_vegetation_structure <- function(){
   field_tag <- cbind(dat, coords) %>% filter(!is.na(UTM_E))
   
   max_no_na <- function(x)max(x, na.rm=T)
-  apparent = readr::read_csv("./tmp/filesToStack10098/stackedFiles/vst_apparentindividual.csv") %>%
+  apparent = read_csv("./tmp/filesToStack10098/stackedFiles/vst_apparentindividual.csv",
+                    col_types = cols(individualID = col_character(), height = col_double(), 
+                    stemDiameter = col_double(), maxCrownDiameter = col_double(),
+                    ninetyCrownDiameter = col_double(), growthForm = col_character(),
+                    plantStatus = col_character(), canopyPosition = col_character(),
+                    shape = col_character())) %>%
+    #filter(!is.na(canopyPosition)) %>%
+    #filter(date > as.Date("2017-01-01")) %>%
     dplyr::select("individualID", "stemDiameter", "height", "maxCrownDiameter",  
                   "ninetyCrownDiameter", "growthForm", "plantStatus", "canopyPosition", "shape") %>%
     group_by(individualID) %>%
@@ -56,3 +62,4 @@ retrieve_vegetation_structure <- function(){
   crown_attributes <- get_crown_dimensions(crown_attributes)
   write_csv(crown_attributes, './out/TOS_outputs/field_data.csv')
 }
+

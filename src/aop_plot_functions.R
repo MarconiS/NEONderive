@@ -12,11 +12,13 @@ aop_chm_plot <- function(plots, data, tileID, epsg, paths, bff = 20, cores = 4){
   dir.create(file.path("out", "AOP", "plot"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "CHM"))#, showWarnings = FALSE)
   dir.create(file.path("out", "AOP", "plot", "ITCs"))#, showWarnings = FALSE)
+  dir.create(file.path("out", "AOP", "plot", "RGB"))#, showWarnings = FALSE)
+  
   dir.create(file.path("out", "AOP", "plot", "spectra"))#, showWarnings = FALSE)
   
-  library(foreach)
-  library(doParallel)
-  
+  # library(foreach)
+  # library(doParallel)
+  # 
   # registerDoSEQ()
   # cl <- makeCluster(cores)
   # registerDoParallel(cl)
@@ -36,8 +38,9 @@ aop_chm_plot <- function(plots, data, tileID, epsg, paths, bff = 20, cores = 4){
     
     #for(ii in 1:nrow(tileID)){
     lid_tile <- list.files(paths$pt, pattern = paste(tileID[ii,], collapse = "_"))
+    rgb_tile <- list.files(paths$rgb_pt, pattern = paste(tileID[ii,], collapse = "_"))
     las_tl <- readLAS(paste(paths$pt, lid_tile, sep="/"))
-    
+    rgb_tl <- brick(paste(paths$rgb_pt, rgb_tile, sep="/"))
     for(jj in 1:nrow(plots)){
       crds <- plots[jj, c("easting", "northing")]
       las <- lasclipRectangle(las_tl, xleft = crds$easting - bff, 
@@ -55,8 +58,11 @@ aop_chm_plot <- function(plots, data, tileID, epsg, paths, bff = 20, cores = 4){
         edg <- c(0, 1.5)
         chm <- grid_canopy(las, 0.25, pitfree(thr, edg, subcircle = 0.17))
         chm <- stretch(chm, minq=0.05, maxq=0.95)
-        
+        rgb <- crop(rgb_tl, extent(chm))
         raster::writeRaster(chm, filename=paste("./out/AOP/plot/CHM/",
+                                                plots[jj,"plotID"], ".tif", sep=""), 
+                            format="GTiff", overwrite=TRUE)
+        raster::writeRaster(rgb, filename=paste("./out/AOP/plot/RGB/",
                                                 plots[jj,"plotID"], ".tif", sep=""), 
                             format="GTiff", overwrite=TRUE)
         writeLAS(las, paste("./out/AOP/plot/las/",

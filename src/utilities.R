@@ -66,17 +66,42 @@ get_aop_data_paths <- function(fld, year, domainID, NeonSites){
   dtm_pt = paste(fld, "/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
                  "/", year,"_", NeonSites, "_2/", "L3/DiscreteLidar/DTMGtif/", sep="")
   
+  rgb_pt = paste(fld, "/DP3.30010.001/", year, "/FullSite/", unique(domainID), "/",
+                 "/", year,"_", NeonSites, "_2/", "L3/DiscreteLidar/DTMGtif/", sep="")
+  
   return(list(pt = pt, f_path = f_path, chm_f = chm_f, dtm_pt= dtm_pt))
   
 }
 
-get_epsg_from_utm <- function(utm){
-  dictionary <- cbind(32616, 32618, 32615, 32617, 32616, 32616, 32616, 32612, 32613, 32617, 32617, 
-                      32614, 32618, 32616, 32619, 32617, 32615) 
-  colnames(dictionary) <- c("STEI", "SERC","CHEQ", "SCBI", "GRSM", "ORNL", "TALL", "MOAB", 
-                            "JORN", "OSBS", "MLBS", "KONZ", "HARV", "LENO", "GUAN", "DSNY", "UKFS")
-  return(dictionary[colnames(dictionary)==utm])
+get_downloaded_data_paths <- function(fld = "//orange/ewhite/NeonData/", year, domainID, NeonSites){
+  
+  if(NeonSites %in% c("SERC", "GRSM", "SCBI", "CHEQ", "STEI", "TALL")){
+    year = 2017
+  }
+  recurred = list.files(paste(fld, NeonSites,"/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/", sep=""))
+  recurred = substr(recurred, nchar(recurred), nchar(recurred))
+  pt <- paste(fld, NeonSites,"/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
+              "/", year,"_", NeonSites, "_", recurred, "/", "L1/DiscreteLidar/ClassifiedPointCloud/", sep="")
+  f_path <- paste(fld, NeonSites, "/DP3.30006.001/", year, "/FullSite/", unique(domainID), "/",
+                  "/", year,"_", NeonSites,"_", recurred, "/", "L3/Spectrometer/Reflectance/", sep="") #H5
+  chm_f <- paste(fld,NeonSites, "/DP1.30003.001/", year, "/FullSite/", unique(domainID), "/",
+                 "/", year,"_", NeonSites, "_", recurred, "/", "L3/CHM/", sep="")
+  dtm_pt = paste(fld,NeonSites, "/DP3.30024.001/", year, "/FullSite/", unique(domainID), "/",
+                 "/", year,"_", NeonSites, "_", recurred, "/", "L3/DiscreteLidar/DTMGtif/", sep="")
+  
+  rgb_pt = paste(fld, NeonSites,"/DP3.30010.001/", year, "/FullSite/", unique(domainID), "/",
+                 "/", year,"_", NeonSites, "_", recurred, "/", "L3/Camera/Mosaic/V01/", sep="")
+  
+  return(list(pt = pt, f_path = f_path, chm_f = chm_f, dtm_pt= dtm_pt, rgb_pt = rgb_pt))
+  
 }
+# get_epsg_from_utm <- function(utm){
+#   dictionary <- cbind(32616, 32618, 32615, 32617, 32616, 32616, 32616, 32612, 32613, 32617, 32617, 
+#                       32614, 32618, 32616, 32619, 32617, 32615) 
+#   colnames(dictionary) <- c("STEI", "SERC","CHEQ", "SCBI", "GRSM", "ORNL", "TALL", "MOAB", 
+#                             "JORN", "OSBS", "MLBS", "KONZ", "HARV", "LENO", "GUAN", "DSNY", "UKFS")
+#   return(dictionary[colnames(dictionary)==utm])
+# }
 
 buffer_bbox <- function(bbox, buffer){
   bbox[c(1,2)] <- bbox[c(1,2)] - buffer
@@ -133,6 +158,7 @@ utm_to_geographic <- function(dat){
 
 get_epsg_from_utm <- function(utm){
   utm <-  substr(utm,1,nchar(utm)-1)
+  if(as.numeric(utm)<10)utm <- paste('0', utm, sep="")
   epsg <- paste("326", utm, sep="")
   return(epsg)
 }

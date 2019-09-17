@@ -146,14 +146,13 @@ import sys
 import ogr, os
 
 full_path =sys.argv[1]
-chm_path = sys.argv[2]
-itc_id = sys.argv[3]
-itc_xmin = float(sys.argv[4])
-itc_xmax = float(sys.argv[5])
-itc_ymin = float(sys.argv[6])
-itc_ymax = float(sys.argv[7])
-epsg = str(sys.argv[8])
-wd = sys.argv[9]
+itc_id = sys.argv[2]
+itc_xmin = float(sys.argv[3])
+itc_xmax = float(sys.argv[4])
+itc_ymin = float(sys.argv[5])
+itc_ymax = float(sys.argv[6])
+epsg = str(sys.argv[7])
+wd = sys.argv[8]
 
 print(itc_id, itc_xmin, itc_xmax, itc_ymin, itc_ymax, epsg)
 
@@ -184,39 +183,39 @@ refl = refl[(subInd['yMin']):subInd['yMax'], (subInd['xMin']):subInd['xMax'], :]
 refl.shape
 print(refl.shape)
 
-chmExtent = {}
-chmExtent['xMin'] = int(itc_xmin/1000) * 1000
-chmExtent['yMin'] = int(itc_ymin/1000) * 1000
-chmExtent['yMax'] = int(itc_ymax/1000 +1) * 1000
-chmExtent['xMax'] = int(itc_xmax/1000+1) * 1000
-print(chmExtent)
-
-chmInd = calc_clip_index(clipExtent, chmExtent)
-chmInd['xMax'] = int(chmInd['xMax'])
-chmInd['xMin'] = int(chmInd['xMin'])
-chmInd['yMax'] = int(chmInd['yMax'])
-chmInd['yMin'] = int(chmInd['yMin'])
-
-print(chmInd)
-chm = gdal.Open(chm_path).ReadAsArray()
-chm = chm[chmInd['yMin']:chmInd['yMax'], chmInd['xMin']:chmInd['xMax']]
-chm = (chm *100).astype(np.int16)
+# chmExtent = {}
+# chmExtent['xMin'] = int(itc_xmin/1000) * 1000
+# chmExtent['yMin'] = int(itc_ymin/1000) * 1000
+# chmExtent['yMax'] = int(itc_ymax/1000 +1) * 1000
+# chmExtent['xMax'] = int(itc_xmax/1000+1) * 1000
+# print(chmExtent)
+# 
+# chmInd = calc_clip_index(clipExtent, chmExtent)
+# chmInd['xMax'] = int(chmInd['xMax'])
+# chmInd['xMin'] = int(chmInd['xMin'])
+# chmInd['yMax'] = int(chmInd['yMax'])
+# chmInd['yMin'] = int(chmInd['yMin'])
+# 
+# print(chmInd)
+# chm = gdal.Open(chm_path).ReadAsArray()
+# chm = chm[chmInd['yMin']:chmInd['yMax'], chmInd['xMin']:chmInd['xMax']]
+# chm = (chm *100).astype(np.int16)
 
 subArray_rows = subInd['yMax'] - subInd['yMin']
 subArray_cols = subInd['xMax'] - subInd['xMin']
-hcp = np.zeros((subArray_rows, subArray_cols, len(rgb)+1), dtype=np.int16)
+hcp = np.zeros((subArray_rows, subArray_cols, len(rgb)), dtype=np.int16)
 
 band_clean_dict = {}
 band_clean_names = []
 for i in range(len(rgb)):
-    if i == 0:
-        band_clean_names.append("b" + 'chm' + "_refl_clean")
-        band_clean_dict[band_clean_names[i]] = chm.astype(np.int16)
-        hcp[..., i] = band_clean_dict[band_clean_names[i]]
-    else:
-        band_clean_names.append("b" + str(rgb[i]) + "_refl_clean")
-        band_clean_dict[band_clean_names[i]] = refl[:, :, rgb[i]].astype(np.int16)
-        hcp[..., i] = band_clean_dict[band_clean_names[i]]
+    # if i == 0:
+    #     band_clean_names.append("b" + 'chm' + "_refl_clean")
+    #     band_clean_dict[band_clean_names[i]] = chm.astype(np.int16)
+    #     hcp[..., i] = band_clean_dict[band_clean_names[i]]
+    # else:
+    band_clean_names.append("b" + str(rgb[i]) + "_refl_clean")
+    band_clean_dict[band_clean_names[i]] = refl[:, :, rgb[i]].astype(np.int16)
+    hcp[..., i] = band_clean_dict[band_clean_names[i]]
 
 sub_meta = refl_md
 ii = str(itc_id) + '.tif'

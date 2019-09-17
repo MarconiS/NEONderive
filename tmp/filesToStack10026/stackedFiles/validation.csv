@@ -1,0 +1,460 @@
+table,fieldName,description,dataType,units,parserToCreate,entryValidationRulesParser,entryValidationRulesForm
+cfc_fieldData,individualCode,"Barcode of an individual",string,NA,,"[ASCII]","[HIDDEN]"
+cfc_fieldData,clipWidth,"The width of the clip-harvest area in meters",real,meter,,,"[HIDDEN][FROM_TABLE]"
+cfc_fieldData,chlorophyllSampleID,"Identifier for a chlorophyll sample",string,NA,,"[IF(IS_BLANK(chlorophyllSampleCode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[REQUIRE][sampleID & '.chl']"
+cfc_fieldData,collectedBy,"An identifier for the technician who collected the sample or specimen",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_fieldData,vd3BaseHeight,"Vertical distance from observer to base of stem for third canopy leaf subsample",real,meter,,"[GREATER_THAN(50-)][LESS_THAN(20)]","[IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(50-)][LESS_THAN(20)]"
+cfc_fieldData,collectDate,"Date of the collection event",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][DATE_FORMAT('YYYY-MM-DDTHH:MM')]"
+cfc_fieldData,chlorophyllSampleCondition,"Condition of a chlorophyll sample",string,NA,,"[LOV]","[DEFAULT_TO('OK)][LOV]"
+cfc_fieldData,subsample1Height,"Vertical distance from ground to height of first canopy subsample",real,meter,"[vd1Sample - vd1BaseHeight]",,
+cfc_fieldData,vstTag,"Indicator for whether a tagID is associated with vegetation structure measurements",string,NA,,"[IF (sampleType = 'Woody individual'), REQUIRE][LOV]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN]"
+cfc_fieldData,clipID,"Unique identifier for the clip-harvest location within the plot",string,NA,,"[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][ASCII]","[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][CONCATENATE(plotID + '_' + clipCellNumber)][HIDDEN]"
+cfc_fieldData,tagID,"Domain-level unique identifier of tag used to mark the individual",string,NA,,"[IF (sampleType = 'Woody individual'), REQUIRE][ASCII]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN]"
+cfc_fieldData,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_fieldData,taxonID,"Species code, based on one or more sources",string,NA,,"[IF (sampleType = 'Woody individual'), REQUIRE][ELEMENT_OF('PLANT','taxonID','T')][ASCII]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN]"
+cfc_fieldData,vd1Sample,"Vertical distance from observer to height of first canopy subsample",real,meter,,"[GREATER_THAN(0)][LESS_THAN(100)]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(0)][LESS_THAN(100)]"
+cfc_fieldData,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_fieldData,sampleFate,"Fate of a sample",string,NA,,"[ASCII]","[HIDDEN][DEFAULT_TO('active')]"
+cfc_fieldData,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]","[ASCII][IF (sampleCondition ! = 'OK'), REQUIRE][IF (chlorophyllSampleCondition ! = 'OK'), REQUIRE]"
+cfc_fieldData,samplingMethod,"Name or code for the method used to collect or test a sample",string,NA,,"[LOV]","[LOV]"
+cfc_fieldData,toxicodendronPossible,"Indicator for whether a sample may contain Toxicodendron spp",string,NA,,"[LOV]","[LOV]"
+cfc_fieldData,subsample2Height,"Vertical distance from ground to height of second canopy subsample",real,meter,"[vd2Sample - vd2BaseHeight]",,
+cfc_fieldData,sampleCode,"Barcode of a sample",string,NA,,"[ASCII]",
+cfc_fieldData,subplotID,"Identifier for the NEON subplot",string,NA,,"[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][LOV]","[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][LOV]"
+cfc_fieldData,vd2BaseHeight,"Vertical distance from observer to base of stem for second canopy subsample",real,meter,,"[GREATER_THAN(50-)][LESS_THAN(20)]","[IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(50-)][LESS_THAN(20)]"
+cfc_fieldData,vd3Sample,"Vertical distance from observer to height of third canopy leaf subsample",real,meter,,"[GREATER_THAN(0)][LESS_THAN(100)]","[IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(0)][LESS_THAN(100)]"
+cfc_fieldData,individualFate,"Fate of a tagged individual",string,NA,,"[ASCII]","[HIDDEN][DEFAULT_TO('released')]"
+cfc_fieldData,subsample3Height,"Vertical distance from ground to height of third canopy subsample",real,meter,"[vd3Sample - vd3BaseHeight]",,
+cfc_fieldData,sampleType,"Type of sample",string,NA,,"[REQUIRE][LOV]","[REQUIRE][LOV]"
+cfc_fieldData,chlorophyllSampleCode,"Barcode of a chlorophyll sample",string,NA,,"[ASCII]",
+cfc_fieldData,chlorophyllSampleFate,"Fate of a chlorophyll sample",string,NA,,"[LOV]","[DEFAULT_TO('active')][LOV]"
+cfc_fieldData,sampleID,"Identifier for sample",string,NA,,"[IF(IS_BLANK(sampleCode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[REQUIRE][CASE sampleType ='Herbaceous clip strip' =>'cfc.' & plotID & '.CLIP-' & sampleNumber & '.' & collectDate; CASE sampleType ='Woody individual' =>'cfc.' & plotID & '.' & taxonID & '-' & sampleNumber & '.' & collectDate]"
+cfc_fieldData,vd1BaseHeight,"Vertical distance from observer to base of stem for first canopy subsample",real,meter,,"[GREATER_THAN(50-)][LESS_THAN(20)]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(50-)][LESS_THAN(20)]"
+cfc_fieldData,plotID,"Plot identifier (NEON site code_XXX)",string,NA,,"[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - cfc')]","[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - cfc')]"
+cfc_fieldData,platformInfo,"Operating System and browser information (where applicable) of computer used during data entry",string,NA,,"[ASCII]",
+cfc_fieldData,percentCoverClip,"Ocular estimate of percent cover of all vegetation in the clip strip",real,percent,,"[GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN_OR_EQUAL_TO(100)]","[IF (sampleType = 'Woody individual'), HIDDEN][GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN_OR_EQUAL_TO(100)]"
+cfc_fieldData,individualID,"Domain-level unique identifier for an individual: NEON.MOD.D##.######",string,NA,,"[IF (sampleType = 'Woody individual'), REQUIRE][EXISTS]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN]"
+cfc_fieldData,sampleNumber,"Number of sample collected",unsigned integer,NA,,"[GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN_OR_EQUAL_TO(10)]","[REQUIRE][GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN_OR_EQUAL_TO(10)]"
+cfc_fieldData,fulcrumVersion,"Version of the Fulcrum application used during data entry",string,NA,,"[ASCII]",
+cfc_fieldData,bagCount,"A per clipID count of sample bags transported from the field to the laboratory for processing",unsigned integer,number,,,"[IF (sampleType = 'Herbaceous clip strip'), WARN]"
+cfc_fieldData,sampleCondition,"Condition of a sample",string,NA,,"[LOV]","[DEFAULT_TO('OK)][LOV]"
+cfc_fieldData,samplingProtocolVersion,"The NEON document number and version where detailed information regarding the sampling method used is available; format NEON.DOC.######vX",string,NA,,"[LOV]","[LOV]"
+cfc_fieldData,setDate,"Date that trap was set",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[HIDDEN][DEFAULT_TO('collectDate')]"
+cfc_fieldData,vd2Sample,"Vertical distance from observer to height of second canopy subsample",real,meter,,"[GREATER_THAN(0)][LESS_THAN(100)]","[IF (sampleType = 'Herbaceous clip strip'), HIDDEN][GREATER_THAN(0)][LESS_THAN(100)]"
+cfc_fieldData,recordedBy,"An identifier for the technician who recorded the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_fieldData,clipLength,"The length of the clip-harvest area in meters",real,meter,,,"[HIDDEN][FROM_TABLE]"
+cfc_fieldData,clipCellNumber,"A numeric identifier for the clip-harvest cell in which herbaceous biomass was sampled",unsigned integer,NA,,"[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN(1000)]","[IF (sampleType = 'Herbaceous clip strip'), REQUIRE][GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN(1000)][IF (sampleType = 'Woody individual'), HIDDEN]"
+cfc_fieldData,plantStatus,"Physical status of individual: live, dead, lost",string,NA,,"[IF (sampleType = 'Woody individual'), REQUIRE][LOV]","[IF (sampleType = 'Woody individual'), REQUIRE][IF (sampleType = 'Herbaceous clip strip'), HIDDEN]"
+bgc_CNiso_externalAnalysis,nitrogenPercent,"Percent nitrogen in a sample on a dry weight basis",real,percent,,"[GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN(5)]",
+bgc_CNiso_externalAnalysis,runID,"A linking value provided by the external lab that associates the sample data to the run metadata, including QA values",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,sampleType,"Type of sample",string,NA,,"[REQUIRE][LOV]",
+bgc_CNiso_externalAnalysis,d15N,"Measure of the ratio of 15N:14N in a sample, relative to atmospheric N2",real,permill,,"[GREATER_THAN(13-)][LESS_THAN(16)]",
+bgc_CNiso_externalAnalysis,CNratio,"Ratio of carbon to nitrogen concentration in a sample on a dry weight basis",real,NA,,"[IF(IS_BLANK(carbonPercent)), REQUIRE_NULL]",
+bgc_CNiso_externalAnalysis,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+bgc_CNiso_externalAnalysis,cnPercentQF,"Quality flag for concentration values outside the calibration range",string,NA,,"[LOV]",
+bgc_CNiso_externalAnalysis,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,analysisDate,"Date that the sample was analyzed",dateTime,NA,"[CONVERT_TO_UTC(laboratoryName)]","[REQUIRE][GREATER_THAN_OR_EQUAL_TO (2013-01-01T)][LESS_THAN_OR_EQUAL_TO (NOW + 24hr)]",
+bgc_CNiso_externalAnalysis,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,instrument,"Type of instrument used for the analysis",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,cnSampleID,"Identifier for a carbon-nitrogen sample",string,NA,,"[EXISTS][IF(IS_BLANK(cnSampleCode)), REQUIRE]",
+bgc_CNiso_externalAnalysis,isotopeAccuracyQF,"Quality flag for accuracy of stable isotope values of QA materials associated with the run",string,NA,,"[LOV]",
+bgc_CNiso_externalAnalysis,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+bgc_CNiso_externalAnalysis,internalLabID,"Internal identifier used by the external facility",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,locationID,"Identifier for location where sample was collected",string,NA,"[DERIVE_FROM_SAMPLE_TREE('sls_soilCoreCollection_in.sampleID' OR 'cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID' OR 'bbc_percore_in.sampleID' OR 'mgp_permegapit_in.pitID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc' OR 'OS Plot - bbc' OR 'OS Plot - bgc' OR 'OS Plot - ltr' OR 'MEGAPIT')]",
+bgc_CNiso_externalAnalysis,analyticalRepNumber,"Number of the analytical replicate",unsigned integer,number,,"[LESS_THAN(10)]",
+bgc_CNiso_externalAnalysis,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('sls_soilCoreCollection_in.sampleID' OR 'cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID' OR 'bbc_percore_in.sampleID' OR 'mgp_permegapit_in.pitID')]",,
+bgc_CNiso_externalAnalysis,cnIsotopeQF,"Quality flag for stable isotope values outside the calibration range",string,NA,,"[LOV]",
+bgc_CNiso_externalAnalysis,carbonPercent,"Percent carbon in a sample on a dry weight basis",real,percent,,"[GREATER_THAN(0)][LESS_THAN(75)]",
+bgc_CNiso_externalAnalysis,analyzedBy,"Name of lab personnel analyzing sample",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,d13C,"Measure of the ratio of 13C:12C in a sample, relative to Vienna Pee Dee Belemnite",real,permill,,"[GREATER_THAN(40-)][LESS_THAN(8-)]",
+bgc_CNiso_externalAnalysis,reviewedBy,"Name of lab personnel who reviewed the data prior to submission",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+bgc_CNiso_externalAnalysis,cnSampleCode,"Barcode of a carbon-nitrogen sample",string,NA,,,
+bgc_CNiso_externalAnalysis,receivedDate,"Date a sample was received",dateTime,NA,"[CONVERT_TO_UTC(laboratoryName)]","[GREATER_THAN_OR_EQUAL_TO (2013-01-01T)][LESS_THAN_OR_EQUAL_TO (NOW + 24hr)]",
+bgc_CNiso_externalAnalysis,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('sls_soilCoreCollection_in.sampleID' OR 'cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID' OR 'bbc_percore_in.sampleID' OR 'mgp_permegapit_in.pitID')]",,
+bgc_CNiso_externalAnalysis,acidTreatment,"Indicator for whether a sample has been acidified to remove carbonate prior to analysis",string,NA,,"[IF (sampleType = 'soil'), REQUIRE][LOV]",
+bgc_CNiso_externalAnalysis,co2Trapped,"Indicator for whether carbon dioxide was trapped prior to analysis; used for measuring nitrogen in high C:N samples",string,NA,,"[IF (sampleType = 'vegetation'), REQUIRE][LOV]",
+bgc_CNiso_externalAnalysis,percentAccuracyQF,"Quality flag for accuracy of percent concentration values of QA materials associated with the run",string,NA,,"[LOV]",
+bgc_CNiso_externalAnalysis,cnSampleFate,"Fate of a carbon-nitrogen sample",string,NA,"[DEFAULT_TO('discarded')]","[ASCII]",
+bgc_CNiso_externalSummary,analyteStandardDeviation,"Long-term average standard deviation values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,"[REQUIRE]",
+bgc_CNiso_externalSummary,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+bgc_CNiso_externalSummary,analyte,"Analyte or parameter measured",string,NA,,"[REQUIRE][LOV]",
+bgc_CNiso_externalSummary,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+bgc_CNiso_externalSummary,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+bgc_CNiso_externalSummary,labSpecificEndDate,"Date a specific analyte, instrument, and associated method detection limit combination ended",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN_OR_EQUAL_TO (labSpecificStartDate)][LESS_THAN_OR_EQUAL_TO (NOW + 24hr)]",
+bgc_CNiso_externalSummary,method,"Published method used for analysis",string,NA,,"[ASCII]",
+bgc_CNiso_externalSummary,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+bgc_CNiso_externalSummary,labSpecificStartDate,"Date a specific analyte, instrument, and associated method detection limit combination started",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE][LESS_THAN_OR_EQUAL_TO (NOW + 24hr)]",
+bgc_CNiso_externalSummary,sampleType,"Type of sample",string,NA,,"[REQUIRE][LOV]",
+bgc_CNiso_externalSummary,analyteUnits,"Associated units of measure for analyte",string,NA,,"[REQUIRE][LOV]",
+bgc_CNiso_externalSummary,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+bgc_CNiso_externalSummary,instrument,"Type of instrument used for the analysis",string,NA,,"[ASCII]",
+bgc_CNiso_externalSummary,analyteKnownValue,"The known value of a given analyte for a quality assurance reference material or standard, with units tied to the analyte",real,NA,,"[REQUIRE]",
+bgc_CNiso_externalSummary,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+bgc_CNiso_externalSummary,analyteAccuracy,"Long-term average accuracy, e.g. the absolute difference between observed and known values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,"[REQUIRE]",
+bgc_CNiso_externalSummary,qaReferenceID,"Identifier for quality assurance reference material or standard",string,NA,,"[REQUIRE][ASCII]",
+vst_apparentindividual,plantStatus,"Physical status of individual: live, dead, lost",string,NA,,"[LOV][ASCII]","[LOV][REQUIRE]"
+vst_apparentindividual,plotID,"Plot identifier (NEON site code_XXX)",string,NA,,"[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]","[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]"
+vst_apparentindividual,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+vst_apparentindividual,individualID,"Domain-level unique identifier for an individual: NEON.MOD.D##.######",string,NA,,"[EXISTS][ASCII][REQUIRE]","[FROM_TABLE(vst_mapping_in.individualID)]"
+vst_apparentindividual,height,"Highest point of an individual or average height of a patch",real,meter,"[vdApexHeight-vdBaseHeight]",,"[HIDDEN]"
+vst_apparentindividual,growthForm,"The growth form classification",string,NA,,"[LOV][ASCII][IF !(plantStatus IN ('Removed', 'No longer qualifies', 'Lost, burned', 'Lost, herbivory', 'Lost, presumed dead', 'Lost, tag damaged', 'Lost, fate unknown', 'Downed')), REQUIRE]","[LOV][SUGGESTED_ENTRY(previousYearValue)]"
+vst_apparentindividual,dataQF,"Data quality flag",string,NA,"[IF MATCH_REGULAR_EXPRESSION(eventID, '_2014|_2015|_2016|_2017'), DEFAULT_TO('legacyData')]","[ASCII]",
+vst_apparentindividual,vdApexBreakHeight,"Height from observer to the highest point along a broken bole",real,meter,,"[GREATER_THAN(0.1)][LESS_THAN(125)]","[GREATER_THAN(0.1)][LESS_THAN(125)]"
+vst_apparentindividual,stemDiameter,"Cross-sectional stem diameter",real,centimeter,,"[IF(SITE='HEAL' | 'TOOL' | 'BARR'), GREATER_THAN_OR_EQUAL_TO(0.5)][IF(SITE != 'HEAL' | 'TOOL' | 'BARR'), GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN(400)]","[IF(IS_BLANK(basalStemDiameter)), REQUIRE][IF(SITE='HEAL' | 'TOOL' | 'BARR'), GREATER_THAN_OR_EQUAL_TO(0.5)][IF(SITE != 'HEAL' | 'TOOL' | 'BARR'), GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN(400)]"
+vst_apparentindividual,vdApexHeight,"Height from observer to highest crown point",real,meter,,"[GREATER_THAN_OR_EQUAL_TO(0.1)][LESS_THAN(125)]","[GREATER_THAN(0.1)][LESS_THAN_OR_EQUAL_TO(125)]"
+vst_apparentindividual,tagStatus,"Description of state or condition of the physical tag",string,NA,,"[LOV][ASCII]","[LOV][SUGGESTED_ENTRY('ok')]"
+vst_apparentindividual,individualBarcode,"Barcode for a tagged individual",string,NA,,"[ASCII]","[HIDDEN]"
+vst_apparentindividual,ninetyCrownDiameter,"Crown diameter perpendicular to maxDiameter",real,meter,,,"[LESS_THAN_OR_EQUAL_TO(maxCrownDiameter)]"
+vst_apparentindividual,breakDiameter,"Cross-sectional diameter at the break point along a broken bole",real,centimeter,,"[GREATER_THAN(0)][LESS_THAN(400)]","[GREATER_THAN(0)][LESS_THAN(400)]"
+vst_apparentindividual,shape,"Description of three dimensional form",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_apparentindividual,nullFieldValidation,"Synthetic field to verify data are present in minimum required fields",real,NA,"[COUNT(stemDiameter, basalStemDiameter, vdApexHeight, height, maxCrownDiameter, ninetyCrownDiameter)]","[IF !(plantStatus IN ('Removed', 'No longer qualifies', 'Lost, burned', 'Lost, herbivory', 'Lost, presumed dead', 'Lost, tag damaged', 'Lost, fate unknown', 'Downed'))& !(growthForm ='sms') & !(tagStatus IN ('removed', 'mislabeled')), REQUIRE][IF !(plantStatus IN ('Removed', 'No longer qualifies', 'Lost, burned', 'Lost, herbivory', 'Lost, presumed dead', 'Lost, tag damaged', 'Lost, fate unknown', 'Downed')) & !(growthForm ='sms') & !(tagStatus IN ('removed', 'mislabeled') & startDate > '2017-06-01T00:00'), GREATER_THAN(0)]",
+vst_apparentindividual,recordedBy,"An identifier for the technician who recorded the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_apparentindividual,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(startDate)]"
+vst_apparentindividual,breakHeight,"Height from the ground to the highest point along a broken bole",real,meter,"[vdApexBreakHeight-vdBaseBreakHeight]",,"[HIDDEN]"
+vst_apparentindividual,maxBaseCrownDiameter,"Maximum crown diameter, measured at ground level",real,meter,,"[GREATER_THAN(0)]","[GREATER_THAN(0)][LESS_THAN(maxCrownDiameter)]"
+vst_apparentindividual,maxCrownDiameter,"Maximum crown diameter of the individual or patch",real,meter,,"[GREATER_THAN(0)]","[GREATER_THAN(0)]"
+vst_apparentindividual,tagID,"Domain-level unique identifier of tag used to mark the individual",string,NA,,"[ASCII]","[REQUIRE][FROM_TABLE][SEE_ATBD]"
+vst_apparentindividual,tempShrubStemID,"Stem-level identifier for a multi-stemmed shrub",string,NA,,"[MATCH_REGULAR_EXPRESSION('[0-9]{2}')]","[MATCH_REGULAR_EXPRESSION('[0-9]{2}')]"
+vst_apparentindividual,canopyPosition,"Vertical status of an individual relative to its neighbors",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_apparentindividual,basalStemDiameterMsrmntHeight,"Height at which basalStemDiameter is measured",real,centimeter,,"[GREATER_THAN(0)][LESS_THAN(100)]","[GREATER_THAN(0)][LESS_THAN(100)]"
+vst_apparentindividual,measuredBy,"An identifier for the technician who measured or collected the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_apparentindividual,baseCrownHeight,"Height above the ground for the lowest portion of the crown",real,meter,,"[LESS_THAN(height)]","[LESS_THAN(height)]"
+vst_apparentindividual,vdBaseHeight,"Height from observer to base of stem",real,meter,,"[LESS_THAN(vdApexHeight)]","[IF(vdApexHeight !=NULL), REQUIRE][LESS_THAN(vdApexHeight)]"
+vst_apparentindividual,individualFate,"Fate of a tagged individual",string,NA,,"[ASCII]","[DEFAULT_TO('released')][HIDDEN]"
+vst_apparentindividual,vdBaseBreakHeight,"Height from observer to the base of a broken bole",real,meter,,"[LESS_THAN(vdApexBreakHeight)]","[IF(vdApexBreakHeight != NULL), REQUIRE][LESS_THAN(vdApexBreakHeight)]"
+vst_apparentindividual,eventID,"An identifier for the set of information associated with the event, which includes information about the place and time of the event",string,NA,,"[ASCII]","[FROM_TABLE(vst_perplotperyear_in)][SUGGESTED_ENTRY(previousValue)]"
+vst_apparentindividual,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(systemDate)][DATE_FORMAT(YYYY-MM-DD)]"
+vst_apparentindividual,subplotID,"Identifier for the NEON subplot",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_apparentindividual,ninetyBaseCrownDiameter,"Crown diameter perpendicular to maxBaseCrownDiameter, measured at ground level",real,meter,,"[GREATER_THAN(0)]","[LESS_THAN(maxCrownDiameter)]"
+vst_apparentindividual,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]","[IF(status lovElementCode = 1:8), REQUIRE]"
+vst_apparentindividual,basalStemDiameter,"Cross-sectional stem diameter at base of stem",real,centimeter,,"[GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(30)]","[IF(IS_BLANK(stemDiameter)), REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(30)]"
+vst_apparentindividual,measurementHeight,"Height at which stemDiameter is measured",real,centimeter,,"[GREATER_THAN(0)][IF(SITE!='PUUM'), LESS_THAN_OR_EQUAL_TO(200)][IF(SITE='PUUM'), LESS_THAN_OR_EQUAL_TO(500)]","[GREATER_THAN(0)][IF(SITE!='PUUM'), LESS_THAN_OR_EQUAL_TO(200)][IF(SITE='PUUM'), LESS_THAN_OR_EQUAL_TO(500)]"
+ltr_ligninSummary,analyteKnownValue,"The known value of a given analyte for a quality assurance reference material or standard, with units tied to the analyte",real,NA,,"[REQUIRE]",
+ltr_ligninSummary,analyteStandardDeviation,"Long-term average standard deviation values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,"[REQUIRE]",
+ltr_ligninSummary,analyteUnits,"Associated units of measure for analyte",string,NA,,"[REQUIRE][LOV]",
+ltr_ligninSummary,instrument,"Type of instrument used for the analysis",string,NA,,"[ASCII]",
+ltr_ligninSummary,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+ltr_ligninSummary,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+ltr_ligninSummary,analytePercentRecovery,"Percent recovery of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,percent,,"[REQUIRE]",
+ltr_ligninSummary,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+ltr_ligninSummary,analyte,"Analyte or parameter measured",string,NA,,"[REQUIRE][LOV]",
+ltr_ligninSummary,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+ltr_ligninSummary,method,"Published method used for analysis",string,NA,,"[ASCII]",
+ltr_ligninSummary,sampleType,"Type of sample",string,NA,,"[ASCII]",
+ltr_ligninSummary,labSpecificStartDate,"Date a specific analyte, instrument, and associated method detection limit combination started",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+ltr_ligninSummary,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+ltr_ligninSummary,labSpecificEndDate,"Date a specific analyte, instrument, and associated method detection limit combination ended",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+ltr_ligninSummary,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+ltr_ligninSummary,qaReferenceID,"Identifier for quality assurance reference material or standard",string,NA,,"[ASCII]",
+cfc_LMA,lmaSampleCode,"Barcode of a leaf mass per area sample",string,NA,,"[ASCII]",
+cfc_LMA,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_LMA,sampleCode,"Barcode of a sample",string,NA,,"[ASCII]",
+cfc_LMA,lmaSampleCondition,"Condition of a leaf mass per area sample",string,NA,,"[LOV]","[DEFAULT_TO('OK')][LOV]"
+cfc_LMA,ovenEndDate,"The date and time a sample was removed from the drying oven",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN(ovenStartDate)]","[DATE_FORMAT('YYYY-MM-DDTHH:MM')][GREATER_THAN(ovenStartDate)][IF(LESS_THAN(ovenStartDate + 48hr)), WARN]"
+cfc_LMA,percentGreen,"Visual estimate of percent scanned foliar material that was live and green",unsigned integer,percent,,"[GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)]","[GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)][SUGGESTED_ENTRY('100')]"
+cfc_LMA,scanDate,"The date and time a sample is scanned",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN_OR_EQUAL_TO(collectDate)]","[DATE_FORMAT('YYYY-MM-DDTHH:MM')][GREATER_THAN_OR_EQUAL_TO(collectDate)]"
+cfc_LMA,dryMass,"Oven-dried mass of sample or subsample",real,gram,,"[IF (lmaSampleFate = 'discarded'), REQUIRE]","[LESS_THAN(freshMass)]"
+cfc_LMA,leafArea,"Area of all leaves or needles scanned",real,squareMillimeter,,"[IF (lmaSampleFate = 'discarded'), REQUIRE][GREATER_THAN(0)][LESS_THAN(500000)]","[GREATER_THAN(0)][LESS_THAN(500000)]"
+cfc_LMA,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_LMA,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[IF (lmaSampleCondition = 'other'), REQUIRE][ASCII]","[IF (lmaSampleCondition = 'other'), REQUIRE][ASCII]"
+cfc_LMA,ovenStartDate,"The date and time a sample was placed in the drying oven",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN_OR_EQUAL_TO(collectDate)]","[DATE_FORMAT('YYYY-MM-DDTHH:MM')][GREATER_THAN_OR_EQUAL_TO(collectDate)]"
+cfc_LMA,sampleID,"Identifier for sample",string,NA,,"[IF(IS_BLANK(sampleCode)), REQUIRE][EXISTS]","[REQUIRE]"
+cfc_LMA,plotID,"Plot identifier (NEON site code_XXX)",string,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc')]",
+cfc_LMA,scannedLeafNumber,"Number of leaves or needles scanned",unsigned integer,number,,"[GREATER_THAN(0)][LESS_THAN(500)]","[GREATER_THAN(0)][LESS_THAN(500)]"
+cfc_LMA,dryMassFraction,"Dry mass divided by fresh mass of a sample",real,NA,"[dryMass / freshMass]",,
+cfc_LMA,measuredBy,"An identifier for the technician who measured or collected the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_LMA,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_LMA,lmaSampleID,"Identifier for a leaf mass per area sample",string,NA,,"[IF(IS_BLANK(lmaSampleCode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[REQUIRE][sampleID & '.lma']"
+cfc_LMA,fulcrumVersion,"Version of the Fulcrum application used during data entry",string,NA,,"[ASCII]",
+cfc_LMA,lmaSampleFate,"Fate of a leaf mass per area sample",string,NA,,"[LOV]","[DEFAULT_TO('discarded')][LOV]"
+cfc_LMA,freshMass,"Total fresh mass of a sample",real,gram,,"[IF(lmaSampleCondition!= 'invalid fresh mass'), REQUIRE][IF(IS_NOT_BLANK), GREATER_THAN(dryMass)]","[IF(lmaSampleCondition!= 'invalid fresh mass'), REQUIRE][IF(lmaSampleCondition= 'invalid fresh mass'), REQUIRE_NULL][GREATER_THAN(0)][LESS_THAN(500)]"
+cfc_LMA,sampleFate,"Fate of a sample",string,NA,,"[ASCII]","[HIDDEN][DEFAULT_TO('active')]"
+cfc_LMA,platformInfo,"Operating System and browser information (where applicable) of computer used during data entry",string,NA,,"[ASCII]",
+cfc_LMA,weighedBy,"An identifier for the technician who weighed the sample",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_LMA,leafMassPerArea,"Dry mass per unit area of leaf or needle foliage",real,gramsPerSquareMeter,"[(dryMass / leafArea) * 1000000]",,
+cfc_LMA,scannedBy,"An identifier for the technician who scanned the sample(s)",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_LMA,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_chlorophyllSummary,labSpecificEndDate,"Date a specific analyte, instrument, and associated method detection limit combination ended",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+cfc_chlorophyllSummary,analyteStandardDeviation,"Long-term average standard deviation values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,,
+cfc_chlorophyllSummary,labSpecificStartDate,"Date a specific analyte, instrument, and associated method detection limit combination started",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+cfc_chlorophyllSummary,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_chlorophyllSummary,instrument,"Type of instrument used for the analysis",string,NA,,"[ASCII]",
+cfc_chlorophyllSummary,method,"Published method used for analysis",string,NA,,"[ASCII]",
+cfc_chlorophyllSummary,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_chlorophyllSummary,analyteUnits,"Associated units of measure for analyte",string,NA,,"[REQUIRE][LOV]",
+cfc_chlorophyllSummary,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+cfc_chlorophyllSummary,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+cfc_chlorophyllSummary,analyteAccuracy,"Long-term average accuracy, e.g. the absolute difference between observed and known values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,,
+cfc_chlorophyllSummary,qaReferenceID,"Identifier for quality assurance reference material or standard",string,NA,,"[ASCII]",
+cfc_chlorophyllSummary,analyteKnownValue,"The known value of a given analyte for a quality assurance reference material or standard, with units tied to the analyte",real,NA,,,
+cfc_chlorophyllSummary,analyte,"Analyte or parameter measured",string,NA,,"[REQUIRE][LOV]",
+cfc_chlorophyllSummary,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_chlorophyllSummary,sampleType,"Type of sample",string,NA,,"[LOV]",
+cfc_chlorophyllSummary,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_elementsSummary,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_elementsSummary,analytePercentRecovery,"Percent recovery of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,percent,,,
+cfc_elementsSummary,labSpecificEndDate,"Date a specific analyte, instrument, and associated method detection limit combination ended",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+cfc_elementsSummary,analyteUnits,"Associated units of measure for analyte",string,NA,,"[REQUIRE][LOV]",
+cfc_elementsSummary,analyteStandardDeviation,"Long-term average standard deviation values of the analyte, based on analysis of quality assurance reference materials or standards treated as unknowns",real,NA,,,
+cfc_elementsSummary,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_elementsSummary,qaReferenceID,"Identifier for quality assurance reference material or standard",string,NA,,"[ASCII]",
+cfc_elementsSummary,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+cfc_elementsSummary,sampleType,"Type of sample",string,NA,,"[ASCII]",
+cfc_elementsSummary,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_elementsSummary,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+cfc_elementsSummary,analyteKnownValue,"The known value of a given analyte for a quality assurance reference material or standard, with units tied to the analyte",real,NA,,,
+cfc_elementsSummary,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_elementsSummary,labSpecificStartDate,"Date a specific analyte, instrument, and associated method detection limit combination started",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+cfc_elementsSummary,analyte,"Analyte or parameter measured",string,NA,,"[REQUIRE][LOV]",
+cfc_elementsSummary,method,"Published method used for analysis",string,NA,,"[ASCII]",
+cfc_elementsSummary,instrument,"Type of instrument used for the analysis",string,NA,,"[ASCII]",
+cfc_chlorophyllParameters,chlCarotExtinctionCoefficient,"Parameter used for calculating chlorophyll or carotenoid content",real,NA,,"[REQUIRE]",
+cfc_chlorophyllParameters,labSpecificStartDate,"Date a specific analyte, instrument, and associated method detection limit combination started",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+cfc_chlorophyllParameters,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_chlorophyllParameters,labSpecificEndDate,"Date a specific analyte, instrument, and associated method detection limit combination ended",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+cfc_chlorophyllParameters,chlCarotEquationInput,"Equation input for calculating chlorophyll or carotenoid content",string,NA,,"[REQUIRE]",
+cfc_chlorophyllParameters,ecReference,"A list of sources (concatenated and semicolon separated) for the extinction coefficients",string,NA,,"[ASCII]",
+cfc_chlorophyllParameters,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_chlorophyllParameters,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+cfc_chlorophyllParameters,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_chlorophyllParameters,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[UPLOAD_DATE]",,
+cfc_chlorophyllParameters,analyte,"Analyte or parameter measured",string,NA,,"[REQUIRE][LOV]",
+cfc_chlorophyllParameters,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+cfc_chlorophyll,chlCarotWavelength2Abs,"Absorbance values for the second wavelength used to measure chlorophyll and carotenoid content",real,NA,,"[IF(chlCarotWavelength2 > 700), GREATER_THAN_OR_EQUAL_TO(-0.4)]
+[IF(chlCarotWavelength2 > 700), LESS_THAN_OR_EQUAL_TO(0.1)]
+[IF(chlCarotWavelength2 < 700), GREATER_THAN(0)]
+[IF(chlCarotWavelength2 < 700), LESS_THAN(2)]",
+cfc_chlorophyll,chlorophyllSampleCode,"Barcode of a chlorophyll sample",string,NA,,"[ASCII]",
+cfc_chlorophyll,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_chlorophyll,receivedCondition,"Condition of the sample on the date it was received",string,NA,,"[LOV]",
+cfc_chlorophyll,chlCarotWavelength4,"The fourth wavelength used to measure chlorophyll and carotenoid content",real,nanometer,,,
+cfc_chlorophyll,extractCarotConc,"Calculated total carotenoid concentration of the extract solution, dilution-corrected as needed",real,microgramsPerMilliliter,,,
+cfc_chlorophyll,receivedDate,"Date a sample was received",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+cfc_chlorophyll,measurementQF,"Quality flag for sample measurement",string,NA,,"[LOV]",
+cfc_chlorophyll,plotID,"Plot identifier (NEON site code_XXX)",string,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc')]",
+cfc_chlorophyll,analyzedBy,"Name of lab personnel analyzing sample",string,NA,,"[ASCII]",
+cfc_chlorophyll,chlCarotWavelength3,"The third wavelength used to measure chlorophyll and carotenoid content",real,nanometer,,,
+cfc_chlorophyll,chlCarotWavelength3Abs,"Absorbance values for the third wavelength used to measure chlorophyll and carotenoid content",real,NA,,"[IF(chlCarotWavelength3 > 700), GREATER_THAN_OR_EQUAL_TO(-0.4)]
+[IF(chlCarotWavelength3 > 700), LESS_THAN_OR_EQUAL_TO(0.1)]
+[IF(chlCarotWavelength3 < 700), GREATER_THAN(0)]
+[IF(chlCarotWavelength3 < 700), LESS_THAN(2)]",
+cfc_chlorophyll,handlingQF,"Quality flag for sample handling",string,NA,,"[LOV]",
+cfc_chlorophyll,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII][IF(sampleCondition= 'other'),REQUIRE]",
+cfc_chlorophyll,analyticalRepNumber,"Number of the analytical replicate",unsigned integer,number,,"[IF(sampleCondition= 'OK'),REQUIRE][GREATER_THAN_OR_EQUAL_TO(1)][LESS_THAN(10)]",
+cfc_chlorophyll,extractionStartDate,"The start date-time for an extraction event",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+cfc_chlorophyll,chlCarotWavelength2,"The second wavelength used to measure chlorophyll and carotenoid content",real,nanometer,,,
+cfc_chlorophyll,sampleCondition,"Condition of a sample",string,NA,,"[LOV]",
+cfc_chlorophyll,chlCarotWavelength1Abs,"Absorbance values for the first wavelength used to measure chlorophyll and carotenoid content",real,NA,,"[IF(chlCarotWavelength1 > 700), GREATER_THAN_OR_EQUAL_TO(-0.4)]
+[IF(chlCarotWavelength1 > 700), LESS_THAN_OR_EQUAL_TO(0.1)]
+[IF(chlCarotWavelength1 < 700), GREATER_THAN(0)]
+[IF(chlCarotWavelength1 < 700), LESS_THAN(2)]",
+cfc_chlorophyll,runID,"A linking value provided by the external lab that associates the sample data to the run metadata, including QA values",string,NA,,"[REQUIRE][ASCII]",
+cfc_chlorophyll,extractionLength,"The duration of an extraction event",real,hour,,"[GREATER_THAN(0)][LESS_THAN(120)]",
+cfc_chlorophyll,reviewedBy,"Name of lab personnel who reviewed the data prior to submission",string,NA,,"[ASCII]",
+cfc_chlorophyll,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+cfc_chlorophyll,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+cfc_chlorophyll,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_chlorophyll,dilutionFactor,"The factor by which the sample was diluted prior to analysis",real,NA,,"[IF(sampleCondition = 'OK'),REQUIRE][GREATER_THAN_OR_EQUAL_TO(1)]",
+cfc_chlorophyll,chlCarotWavelength1,"The first wavelength used to measure chlorophyll and carotenoid content",real,nanometer,,,
+cfc_chlorophyll,freshMass,"Total fresh mass of a sample",real,gram,,"[IF(sampleCondition = 'OK'),REQUIRE][GREATER_THAN(0)][LESS_THAN(10)]",
+cfc_chlorophyll,chlorophyllSampleID,"Identifier for a chlorophyll sample",string,NA,,"[IF(IS_BLANK(chlorophyllSampleCode)), REQUIRE][EXISTS]",
+cfc_chlorophyll,internalLabID,"Internal identifier used by the external facility",string,NA,,"[ASCII]",
+cfc_chlorophyll,extractChlAConc,"Calculated chlorophyll A concentration of the extract solution, dilution-corrected as needed",real,microgramsPerMilliliter,,,
+cfc_chlorophyll,solventVolume,"Volume of solvent used in the extraction",real,milliliter,,"[IF(sampleCondition = 'OK'),REQUIRE][GREATER_THAN(0)][LESS_THAN(200)]",
+cfc_chlorophyll,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_chlorophyll,chlCarotWavelength4Abs,"Absorbance values for the fourth wavelength used to measure chlorophyll and carotenoid content",real,NA,,"[IF(chlCarotWavelength4 > 700), GREATER_THAN_OR_EQUAL_TO(-0.4)]
+[IF(chlCarotWavelength4 > 700), LESS_THAN_OR_EQUAL_TO(0.1)]
+[IF(chlCarotWavelength4 < 700), GREATER_THAN(0)]
+[IF(chlCarotWavelength4 < 700), LESS_THAN(2)]",
+cfc_chlorophyll,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_chlorophyll,relativeAccuracyScale,"Indicator for the mean relative accuracy of standards analyzed as unknowns with a run of samples",string,NA,,"[LOV]",
+cfc_chlorophyll,chlorophyllSampleFate,"Fate of a chlorophyll sample",string,NA,"[DEFAULT_TO('discarded')]",,
+cfc_chlorophyll,extractChlBConc,"Calculated chlorophyll B concentration of the extract solution, dilution-corrected as needed",real,microgramsPerMilliliter,,,
+vst_mappingandtagging,vstFate,"Fate for vstID",string,NA,,"[ASCII]","[DEFAULT_TO('released')][HIDDEN]"
+vst_mappingandtagging,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+vst_mappingandtagging,supportingStemIndividualID,"Globally unique identifier for stem on which a liana is growing",string,NA,,"[ASCII]","[HIDDEN]['NEON.PLA.' + domainID + '.' + siteID + '.' + tagID]"
+vst_mappingandtagging,vstID,"Year specific identifier for the individual",string,NA,,"[DOES_NOT_EXIST][ASCII][IF (recordType != 'temporary'), MATCH_REGULAR_EXPRESSION('^VST.[A-Z]{4}.[0-9]{5}[A-Z]{0,1}.20[1-5]{1}[0-9]{1}')][IF (recordType = 'temporary'), MATCH_REGULAR_EXPRESSION('^TEMP.[A-Z]{4}.[0-9]{5}[A-Z]{0,1}.20[1-5]{1}[0-9]{1}')]","[DOES_NOT_EXIST][ASCII][IF (recordType != 'temporary'), MATCH_REGULAR_EXPRESSION('^VST.[A-Z]{4}.[0-9]{5}[A-Z]{0,1}.20[1-5]{1}[0-9]{1}')][IF (recordType = 'temporary'), MATCH_REGULAR_EXPRESSION('^TEMP.[A-Z]{4}.[0-9]{5}[A-Z]{0,1}.20[1-5]{1}[0-9]{1}')]"
+vst_mappingandtagging,pointID,"Identifier for a point location",string,NA,,"[ASCII]","[NAMED_LOCATION_TYPE('OS Point - vst')][LOV]"
+vst_mappingandtagging,identificationReferences,"A list of sources (concatenated and semicolon separated) used to derive the specific taxon concept; including field guide editions, books, or versions of NEON keys used",string,NA,,"[ASCII]",
+vst_mappingandtagging,taxonID,"Species code, based on one or more sources",string,NA,,"[REQUIRE][ELEMENT_OF('PLANT', 'taxonID', 'T')][ASCII]","[REQUIRE][ELEMENT_OF('PLANT', 'taxonID', 'T']"
+vst_mappingandtagging,vstBarcode,"Barcode for vstID",string,NA,,"[ASCII]",
+vst_mappingandtagging,individualFate,"Fate of a tagged individual",string,NA,,"[ASCII]","[DEFAULT_TO('released')][HIDDEN]"
+vst_mappingandtagging,supportingStemTagID,"Unique tagID for stem on which a liana is growing",string,NA,,"[ASCII]","[MATCH_REGULAR_EXPRESSION([0-9]{5}[A-E]?)]"
+vst_mappingandtagging,individualID,"Domain-level unique identifier for an individual: NEON.MOD.D##.######",string,NA,,"[MIGHT_EXIST][ASCII][IF (recordType != 'temporary'), MATCH_REGULAR_EXPRESSION('^NEON.PLA.D[0-2]{1}[0-9]{1}.[A-Z]{4}.[0-9]{5}[A-Z]{0,1}')][IF (recordType = 'temporary'), MATCH_REGULAR_EXPRESSION('^TEMP.PLA.[A-Z]{4}.20[0-9]{2}.[0-9]{4}')]","[IF(recordType!='temporary'), 'NEON.PLA.' + domainID + '.' + 'siteID' + '.' + tagID][IF(recordType!='temporary'), 'TEMP.PLA.' + siteID + '.' + yearBoutBegan + ####']"
+vst_mappingandtagging,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(systemDate)][DATE_FORMAT(YYYY-MM-DD)]"
+vst_mappingandtagging,subplotID,"Identifier for the NEON subplot",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_mappingandtagging,recordType,"Categorical indicator for type of data record",string,NA,,"[LOV]","[LOV]"
+vst_mappingandtagging,identificationQualifier,"A standard term to express the determiner's doubts about the Identification",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_mappingandtagging,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+vst_mappingandtagging,measuredBy,"An identifier for the technician who measured or collected the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_mappingandtagging,morphospeciesID,"Identifier for morphospecies",string,NA,,"[ASCII]","[FROM_TABLE][SEE_ATBD]"
+vst_mappingandtagging,stemAzimuth,"Azimuth relative to True North between stem and pointID location",real,degree,,"[GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(360)]","[GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(360)]"
+vst_mappingandtagging,individualBarcode,"Barcode for a tagged individual",string,NA,,"[ASCII]","[HIDDEN]"
+vst_mappingandtagging,nestedSubplotID,"Numeric identifier for nested subplot ID within a subplotID",string,NA,,"[LOV]","[LOV]"
+vst_mappingandtagging,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(startDate)]"
+vst_mappingandtagging,morphospeciesIDRemarks,"Technician notes about the morphospecies; free text comments accompanying the record",string,NA,,"[ASCII]","[ASCII]"
+vst_mappingandtagging,cfcOnlyTag,"Indicator for whether a tagID is a associated with canopy foliage sampling only",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_mappingandtagging,tagID,"Domain-level unique identifier of tag used to mark the individual",string,NA,,"[ASCII]","[REQUIRE][MATCH_REGULAR_EXPRESSION ((^[0-9]{1,5}[A-Z]{0,1})"
+vst_mappingandtagging,previouslyTaggedAs,"Indicates the tagID previously reported for a given individual",string,NA,,"[ASCII]","[FROM_TABLE(vst.tagID)]"
+vst_mappingandtagging,recordedBy,"An identifier for the technician who recorded the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_mappingandtagging,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]","[IF(taxonID=='OTHE', [REQUIRE]][ASCII]"
+vst_mappingandtagging,plotID,"Plot identifier (NEON site code_XXX)",string,NA,,"[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]","[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]"
+vst_mappingandtagging,stemDistance,"Horizontal distance from stem to pointID location",real,meter,,"[GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN(56)]","[GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN(40)]"
+vst_mappingandtagging,yearBoutBegan,"The calendar year that the bout began",integer,NA,,,"[REQUIRE][MATCH_REGULAR_EXPRESSION(^20[1-5]{1}[0-9]{1})]"
+vst_mappingandtagging,eventID,"An identifier for the set of information associated with the event, which includes information about the place and time of the event",string,NA,,"[ASCII]","[FROM_TABLE(vst_perplotperyear_in)]"
+vst_mappingandtagging,samplingProtocolVersion,"The NEON document number and version where detailed information regarding the sampling method used is available; format NEON.DOC.######vX",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,yuccasPresent,"Indicator of whether the plot contains yucca or yucca-like growth forms",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,nestedSubplotAreaShrubSapling,"Size of nested plot in which shrubs, saplings and small trees were measured",string,NA,,"[LOV][ASCII]","[REQUIRE][LOV]"
+vst_perplotperyear,cactiAbsentList,"List of subplots or nested subplots in which cacti are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+vst_perplotperyear,lianasPresent,"Indicator of whether the plot contains lianas",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,xerophyllumPresent,"Indicator of whether the plot contains xerophyllum",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,fernsPresent,"Indicator of whether the plot contains ferns",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,samplingProtocolVersion,"The NEON document number and version where detailed information regarding the sampling method used is available; format NEON.DOC.######vX",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+vst_perplotperyear,nestedSubplotAreaLiana,"Size of nested plot in which lianas were measured",string,NA,,"[LOV][ASCII]","[REQUIRE][LOV]"
+vst_perplotperyear,totalSampledAreaLiana,"Total plot area sampled for liana",real,squareMeter,,"[REQUIRE]","[REQUIRE][SEE_ATBD]"
+vst_perplotperyear,ocotillosAbsentList,"List of subplots or nested subplots in which ocotillos are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]","[ASCII]"
+vst_perplotperyear,measuredBy,"An identifier for the technician who measured or collected the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_perplotperyear,shrubsPresent,"Indicator of whether the plot contains shrubs, saplings, or small trees",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,xerophyllumAbsentList,"List of subplots or nested subplots in which xerophyllum are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,totalSampledAreaOther,"Total plot area sampled for qualifying non-woody growth forms",real,squareMeter,,"[REQUIRE]","[REQUIRE][SEE_ATBD]"
+vst_perplotperyear,cactiPresent,"Indicator of whether the plot contains cacti",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,ocotillosPresent,"Indicator of whether the plot contains ocotillo",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,lianasAbsentList,"List of subplots or nested subplots in which lianas are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,fernsAbsentList,"List of subplots or nested subplots in which ferns are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,plotID,"Plot identifier (NEON site code_XXX)",string,NA,,"[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]","[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]"
+vst_perplotperyear,treesAbsentList,"List of subplots in which trees are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,palmsAbsentList,"List of subplots or nested subplots in which palm are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,yuccasAbsentList,"List of subplots or nested subplots in which yuccas are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,totalSampledAreaTrees,"Total plot area sampled for single and multi-bole trees",real,squareMeter,,"[REQUIRE]","[REQUIRE][SEE_ATBD]"
+vst_perplotperyear,recordedBy,"An identifier for the technician who recorded the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_perplotperyear,shrubsAbsentList,"List of subplots or nested subplots in which shrubs, saplings and small trees are not present",string,NA,,,"[FROM_TABLE][SEE_ATBD]"
+vst_perplotperyear,yearBoutBegan,"The calendar year that the bout began",integer,NA,,,"[REQUIRE][MATCH_REGULAR_EXPRESSION(^[20]{2}+[1-5]{1}[0-9]{1})]"
+vst_perplotperyear,treesPresent,"Indicator of whether the plot contains trees >=10 cm diameter",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,totalSampledAreaShrubSapling,"Total plot area sampled for saplings, shrubs, and small trees",real,squareMeter,,"[REQUIRE]","[REQUIRE][SEE_ATBD]"
+vst_perplotperyear,palmsPresent,"Indicator of whether the plot contains palms of any size",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_perplotperyear,eventID,"An identifier for the set of information associated with the event, which includes information about the place and time of the event",string,NA,,,"['vst_' + siteID + yearBoutBegan]"
+vst_perplotperyear,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(startDate)]"
+vst_perplotperyear,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(systemDate)][DATE_FORMAT(YYYY-MM-DD)]"
+vst_perplotperyear,nestedSubplotAreaOther,"Size of nested plot in which other qualifying growthForms were measured",string,NA,,"[LOV][ASCII]","[REQUIRE][LOV]"
+vst_shrubgroup,meanHeight,"The mean of multiple height measurements",real,meter,"[MEAN(aGroupHeight, bGroupHeight, cGroupHeight, dGroupHeight, eGroupHeight)]",,
+vst_shrubgroup,measuredBy,"An identifier for the technician who measured or collected the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_shrubgroup,aGroupHeight,"Height of tallest 5 stems in group, a",real,meter,,"[REQUIRE][GREATER_THAN(0)][LESS_THAN(10)]","[REQUIRE][GREATER_THAN(0)][LESS_THAN(10)]"
+vst_shrubgroup,eventID,"An identifier for the set of information associated with the event, which includes information about the place and time of the event",string,NA,,"[REQUIRE][ASCII]","[FROM_TABLE(vst_perplotperyear_in)][SUGGESTED_ENTRY(previousValue)]"
+vst_shrubgroup,subplotID,"Identifier for the NEON subplot",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_shrubgroup,endDate,"The end date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(startDate)]"
+vst_shrubgroup,startDate,"The start date-time or interval during which an event occurred",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]","[REQUIRE][SUGGESTED_ENTRY(systemDate)][DATE_FORMAT(YYYY-MM_DD)]"
+vst_shrubgroup,morphospeciesID,"Identifier for morphospecies",string,NA,,"[ASCII]","[FROM_TABLE]"
+vst_shrubgroup,dGroupHeight,"Height of tallest 5 stems in group, d",real,meter,,"[GREATER_THAN(0)][LESS_THAN(10)]","[GREATER_THAN(0)][LESS_THAN(10)]"
+vst_shrubgroup,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+vst_shrubgroup,deadPercent,"Percent of a given species, within a group, that is dead",real,percent,,"[REQUIRE][GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN_OR_EQUAL_TO(100)]","[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)][MATCH_REGULAR_EXPRESSION(^([1-9][0-9]?$)|^100$|^0.5$)]"
+vst_shrubgroup,cGroupHeight,"Height of tallest 5 stems in group, c",real,meter,,"[GREATER_THAN(0)][LESS_THAN(10)]","[GREATER_THAN(0)][LESS_THAN(10)]"
+vst_shrubgroup,taxonID,"Species code, based on one or more sources",string,NA,,"[REQUIRE][ASCII]","[REQUIRE][ELEMENT_OF('PLANT', 'taxonID', 'T']"
+vst_shrubgroup,identificationQualifier,"A standard term to express the determiner's doubts about the Identification",string,NA,,"[LOV][ASCII]","[LOV]"
+vst_shrubgroup,recordedBy,"An identifier for the technician who recorded the data",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+vst_shrubgroup,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+vst_shrubgroup,bGroupHeight,"Height of tallest 5 stems in group, b",real,meter,,"[GREATER_THAN(0)][LESS_THAN(10)]","[GREATER_THAN(0)][LESS_THAN(10)]"
+vst_shrubgroup,groupID,"Identifier for a group of individuals being measured",string,NA,,"[ASCII][MATCH_REGULAR_EXPRESSION('^[0-9]{2}_[0-9]{2}')]","[REQUIRE][MATCH_REGULAR_EXPRESSION(^[0-9]{2}[_][0-9]{2})]"
+vst_shrubgroup,canopyArea,"Area of the group canopy",real,squareMeter,,"[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(400)]","[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(vst_perplotperyear:nestedSubplotAreaShrubSapling)]"
+vst_shrubgroup,eGroupHeight,"Height of tallest 5 stems in group, e",real,meter,,"[GREATER_THAN(0)][LESS_THAN(10)]","[GREATER_THAN(0)][LESS_THAN(10)]"
+vst_shrubgroup,morphospeciesIDRemarks,"Technician notes about the morphospecies; free text comments accompanying the record",string,NA,,"[ASCII]","[ASCII]"
+vst_shrubgroup,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]","[ASCII]"
+vst_shrubgroup,livePercent,"Percent of a given species, within a group, that is alive",real,percent,,"[REQUIRE][GREATER_THAN_OR_EQUAL_TO(0)][LESS_THAN_OR_EQUAL_TO(100)]","[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)][MATCH_REGULAR_EXPRESSION(^([1-9][0-9]?$)|^100$|^0.5$)]"
+vst_shrubgroup,identificationReferences,"A list of sources (concatenated and semicolon separated) used to derive the specific taxon concept; including field guide editions, books, or versions of NEON keys used",string,NA,,"[ASCII]",
+vst_shrubgroup,volumePercent,"Percent of the total volume of a group attributed to a particular species",real,percent,,"[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)]","[REQUIRE][GREATER_THAN(0)][LESS_THAN_OR_EQUAL_TO(100)][MATCH_REGULAR_EXPRESSION(^([1-9][0-9]?$)|^100$|^0.5$)]"
+vst_shrubgroup,plotID,"Plot identifier (NEON site code_XXX)",string,NA,,"[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')]","[REQUIRE][NAMED_LOCATION_TYPE('OS Plot - vst')][SUGGESTED_ENTRY(previousValue)]"
+vst_shrubgroup,nestedSubplotID,"Numeric identifier for nested subplot ID within a subplotID",string,NA,,"[LOV][ASCII]","[LOV]"
+ltr_lignin,receivedDate,"Date a sample was received",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+ltr_lignin,ligninPercent,"Percent lignin on a dry mass basis",real,percent,,"[GREATER_THAN(0)][LESS_THAN(100)]",
+ltr_lignin,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID')]",,
+ltr_lignin,measurementQF,"Quality flag for sample measurement",string,NA,,"[LOV]",
+ltr_lignin,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+ltr_lignin,analysisDate,"Date that the sample was analyzed",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+ltr_lignin,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+ltr_lignin,ligninSampleID,"Identifier for a lignin sample",string,NA,,"[EXISTS][IF(IS_BLANK(ligninSampleBarcode)), REQUIRE]",
+ltr_lignin,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+ltr_lignin,ligninSampleBarcode,"Barcode for a lignin sample",string,NA,,"[ASCII]",
+ltr_lignin,analyzedBy,"Name of lab personnel analyzing sample",string,NA,,"[ASCII]",
+ltr_lignin,analyticalRepNumber,"Number of the analytical replicate",unsigned integer,number,,"[LESS_THAN(10)]",
+ltr_lignin,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID')]",,
+ltr_lignin,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]",
+ltr_lignin,reviewedBy,"Name of lab personnel who reviewed the data prior to submission",string,NA,,"[ASCII]",
+ltr_lignin,cellulosePercent,"Percent cellulose on a dry mass basis",real,percent,,"[GREATER_THAN(0)][LESS_THAN(100)]",
+ltr_lignin,plotID,"Plot identifier (NEON site code_XXX)",string,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID' OR 'ltr_fielddata_in.fieldSampleID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc' OR 'OS Plot - ltr')]",
+ltr_lignin,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+ltr_lignin,accuracyQF,"Quality flag for quality assurance materials associated with the run",string,NA,,"[LOV]",
+ltr_lignin,dryMass,"Oven-dried mass of sample or subsample",real,gram,,"[GREATER_THAN(0)][LESS_THAN(10)]",
+ltr_lignin,internalLabID,"Internal identifier used by the external facility",string,NA,,"[ASCII]",
+ltr_lignin,ligninSampleFate,"Fate of a lignin sample",string,NA,,"[DEFAULT_TO('discarded')]",
+ltr_lignin,runID,"A linking value provided by the external lab that associates the sample data to the run metadata, including QA values",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,sampleCode,"Barcode of a sample",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,toxicodendronPossible,"Indicator for whether a sample may contain Toxicodendron spp",string,NA,,"[LOV]","[LOV]"
+cfc_chemistrySubsampling,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[IF (sampleCondition = 'other'), REQUIRE][ASCII]","[IF (sampleCondition = 'other'), REQUIRE][ASCII]"
+cfc_chemistrySubsampling,ovenStartDate,"The date and time a sample was placed in the drying oven",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN_OR_EQUAL_TO(collectDate)]","[DATE_FORMAT('YYYY-MM-DDTHH:MM')][GREATER_THAN_OR_EQUAL_TO(collectDate)]"
+cfc_chemistrySubsampling,archiveSampleCode,"Barcode of archive sample",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,sampleCondition,"Condition of a sample",string,NA,,"[LOV]","[DEFAULT_TO('OK')][LOV]"
+cfc_chemistrySubsampling,sampleID,"Identifier for sample",string,NA,,"[IF(IS_BLANK(sampleCode)), REQUIRE][EXISTS]","[REQUIRE]"
+cfc_chemistrySubsampling,ligninSampleBarcode,"Barcode for a lignin sample",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,fulcrumVersion,"Version of the Fulcrum application used during data entry",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,ligninSampleID,"Identifier for a lignin sample",string,NA,,"[IF(IS_BLANK(ligninSampleBarcode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[REQUIRE][sampleID & '.lig']"
+cfc_chemistrySubsampling,bgcArchive,"Indicator for whether a biogeochemistry archive sample was created",string,NA,,"[LOV]","[LOV]"
+cfc_chemistrySubsampling,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_chemistrySubsampling,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,ligninSampleFate,"Fate of a lignin sample",string,NA,,"[LOV]","[DEFAULT_TO('active')][LOV]"
+cfc_chemistrySubsampling,ovenEndDate,"The date and time a sample was removed from the drying oven",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[GREATER_THAN(ovenStartDate)]","[DATE_FORMAT('YYYY-MM-DDTHH:MM')][GREATER_THAN(ovenStartDate)][IF(LESS_THAN(ovenStartDate + 48hr)), WARN]"
+cfc_chemistrySubsampling,archiveSampleFate,"Fate of archived sample",string,NA,,"[LOV]","[DEFAULT_TO('active')][LOV]"
+cfc_chemistrySubsampling,cnSampleFate,"Fate of a carbon-nitrogen sample",string,NA,,"[LOV]","[DEFAULT_TO('active')][LOV]"
+cfc_chemistrySubsampling,cnSampleID,"Identifier for a carbon-nitrogen sample",string,NA,,"[IF(IS_BLANK(cnSampleCode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[REQUIRE][sampleID & '.cn']"
+cfc_chemistrySubsampling,platformInfo,"Operating System and browser information (where applicable) of computer used during data entry",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,archiveSampleID,"Identifier for an archive sample",string,NA,,"[IF(bgcArchive = 'Y' & IS_BLANK(archiveSampleCode)), REQUIRE][DOES_NOT_EXIST][ASCII]","[IF (bgcArchive = 'Y'), REQUIRE][sampleID & '.ar']"
+cfc_chemistrySubsampling,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_chemistrySubsampling,cnSampleCode,"Barcode of a carbon-nitrogen sample",string,NA,,"[ASCII]",
+cfc_chemistrySubsampling,processedBy,"An identifier for the technician who processed the sample(s)",string,NA,,"[ASCII]","[FROM_PERSONNEL][SUGGESTED_ENTRY(previousValue)]"
+cfc_chemistrySubsampling,sampleFate,"Fate of a sample",string,NA,,"[ASCII]","[HIDDEN][DEFAULT_TO('processed')]"
+cfc_chemistrySubsampling,plotID,"Plot identifier (NEON site code_XXX)",string,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc')]",
+cfc_chemistrySubsampling,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_elements,foliarPhosphorusConc,"Concentration of phophorus in plant foliage sample on a dry mass basis",real,percent,,,
+cfc_elements,digestPotassiumConc,"Concentration of potassium in sample digest",real,milligramsPerLiter,,,
+cfc_elements,digestVolume,"Volume of digest solution used",real,milliliter,,,
+cfc_elements,digestIronConc,"Concentration of iron in sample digest",real,milligramsPerLiter,,,
+cfc_elements,testMethod,"Method used to conduct test",string,NA,,"[ASCII]",
+cfc_elements,runID,"A linking value provided by the external lab that associates the sample data to the run metadata, including QA values",string,NA,,"[REQUIRE][ASCII]",
+cfc_elements,foliarManganeseConc,"Concentration of manganese in plant foliage sample on a dry mass basis",real,milligramsPerKilogram,,,
+cfc_elements,digestBoronConc,"Concentration of boron in sample digest",real,milligramsPerLiter,,,
+cfc_elements,digestCalciumConc,"Concentration of calcium in sample digest",real,milligramsPerLiter,,,
+cfc_elements,foliarPotassiumConc,"Concentration of potassium in plant foliage sample on a dry mass basis",real,percent,,,
+cfc_elements,ligninSampleID,"Identifier for a lignin sample",string,NA,,"[IF(IS_BLANK(ligninSampleBarcode)), REQUIRE][EXISTS]",
+cfc_elements,foliarIronConc,"Concentration of iron in plant foliage sample on a dry mass basis",real,milligramsPerKilogram,,,
+cfc_elements,digestMagnesiumConc,"Concentration of magnesium in sample digest",real,milligramsPerLiter,,,
+cfc_elements,analyticalRepNumber,"Number of the analytical replicate",unsigned integer,number,,"[REQUIRE][LESS_THAN(10)]",
+cfc_elements,analyzedBy,"Name of lab personnel analyzing sample",string,NA,,"[ASCII]",
+cfc_elements,digestCopperConc,"Concentration of copper in sample digest",real,milligramsPerLiter,,,
+cfc_elements,reviewedBy,"Name of lab personnel who reviewed the data prior to submission",string,NA,,"[ASCII]",
+cfc_elements,foliarMagnesiumConc,"Concentration of magnesium in plant foliage sample on a dry mass basis",real,percent,,,
+cfc_elements,digestManganeseConc,"Concentration of manganese in sample digest",real,milligramsPerLiter,,,
+cfc_elements,setDate,"Date that trap was set",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_elements,receivedDate,"Date a sample was received",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]",,
+cfc_elements,dryMass,"Oven-dried mass of sample or subsample",real,gram,,"[GREATER_THAN(0)][LESS_THAN(10)]",
+cfc_elements,uid,"Unique ID within NEON database; an identifier for the record",string,NA,"[CREATE_UID]",,
+cfc_elements,ligninSampleBarcode,"Barcode for a lignin sample",string,NA,,"[ASCII]",
+cfc_elements,foliarCalciumConc,"Concentration of calcium in plant foliage sample on a dry mass basis",real,percent,,,
+cfc_elements,foliarBoronConc,"Concentration of boron in plant foliage sample on a dry mass basis",real,milligramsPerKilogram,,,
+cfc_elements,digestZincConc,"Concentration of zinc in sample digest",real,milligramsPerLiter,,,
+cfc_elements,collectDate,"Date of the collection event",dateTime,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]",,
+cfc_elements,analysisDate,"Date that the sample was analyzed",dateTime,NA,"[CONVERT_TO_UTC(namedLocation)]","[REQUIRE]",
+cfc_elements,foliarCopperConc,"Concentration of copper in plant foliage sample on a dry mass basis",real,milligramsPerKilogram,,,
+cfc_elements,digestPhosphorusConc,"Concentration of phophorus in sample digest",real,milligramsPerLiter,,,
+cfc_elements,digestSulfurConc,"Concentration of sulfur in sample digest",real,milligramsPerLiter,,,
+cfc_elements,foliarZincConc,"Concentration of zinc in plant foliage sample on a dry mass basis",real,milligramsPerKilogram,,,
+cfc_elements,internalLabID,"Internal identifier used by the external facility",string,NA,,"[ASCII]",
+cfc_elements,laboratoryName,"Name of the laboratory or facility that is processing the sample",string,NA,"[DEFAULT_TO_LAB_LOGGED_IN]","[NAMED_LOCATION_TYPE('External Lab')]",
+cfc_elements,foliarSulfurConc,"Concentration of sulfur in plant foliage sample on a dry mass basis",real,percent,,,
+cfc_elements,plotID,"Plot identifier (NEON site code_XXX)",string,NA,"[DERIVE_FROM_SAMPLE_TREE('cfc_fieldData_in.sampleID')]","[NAMED_LOCATION_TYPE('OS Plot - cfc')]",
+cfc_elements,dataQF,"Data quality flag",string,NA,,"[ASCII]",
+cfc_elements,accuracyQF,"Quality flag for quality assurance materials associated with the run",string,NA,,"[LOV]",
+cfc_elements,ligninSampleFate,"Fate of a lignin sample",string,NA,"[DEFAULT_TO('discarded')]",,
+cfc_elements,measurementQF,"Quality flag for sample measurement",string,NA,,"[LOV]",
+cfc_elements,remarks,"Technician notes; free text comments accompanying the record",string,NA,,"[ASCII]",

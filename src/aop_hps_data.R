@@ -43,10 +43,10 @@ aop_hps_data <- function(centroids, hps_f, f_path, chm_f, epsg, wd,NeonSites =NU
       token = unlist(strsplit(clean_hps[z], split = "_"))[6] #3 for old tiles
       itcextract <- get_itcs_in_tile(clean_hps[z], centroids, NeonSites= NeonSites, f_path)
       tryCatch({
-        chm_pt <- list.files(chm_f, pattern = paste(as.integer(itcextract$easting[mm]/1000)*1000, "_",
-                                                    as.integer(itcextract$northing[mm]/1000)*1000, sep=""))
-        chm <- (paste(chm_f, chm_pt, sep="/"))
-        aop_extract_data(x = itcextract[mm,], f= paste(f_path,clean_hps[z],sep = "/"), chm = chm, buffer = buffer,
+        # chm_pt <- list.files(chm_f, pattern = paste(as.integer(itcextract$easting[mm]/1000)*1000, "_",
+        #                                             as.integer(itcextract$northing[mm]/1000)*1000, sep=""))
+        # chm <- (paste(chm_f, chm_pt, sep="/"))
+        aop_extract_data(x = itcextract[mm,], f= paste(f_path,clean_hps[z],sep = "/"), buffer = buffer,
                    epsg = epsg, token = token, wd = wd)#, pybin = "/home/s.marconi/.conda/envs/quetzal3/bin")
         print(paste(mm, z, clean_hps[z]))
       },error=function(e){})
